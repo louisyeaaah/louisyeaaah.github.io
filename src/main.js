@@ -3,7 +3,7 @@
  *
  * Boot order matters: content is rendered from data first (so the graph and the
  * document agree), then the scroll engine exists (everything measures against
- * it), then the 3D scene, then the UI that talks to it.
+ * it), then the opening shot, then the UI.
  *
  * Every subsystem is wrapped so one failing library cannot take the page down —
  * a real risk when six animation runtimes share a document. Failures land on
@@ -72,19 +72,29 @@ async function start() {
   // 2. Scroll engine, before anything registers a trigger against it.
   boot('scroll', () => initScroll({ navHeight: 72 }));
 
-  // 3. The scene. Heavy, so it comes in behind a guard.
-  const canvas = one('#scene');
-  const labelLayer = one('#sceneLabels');
-  const { createScene } = await bootAsync('sceneImport', () => import('./scene/index.js')) ?? {};
-  const scene = createScene && canvas ? boot('scene', () => createScene(canvas, { labelLayer })) : null;
+  // 2b. The depth plate. Muted + inline should autoplay everywhere, but iOS
+  //     Low Power Mode refuses, so fall back to the poster frame silently.
+  const heroVideo = one('#heroVideo');
+  if (heroVideo) {
+    const attempt = heroVideo.play();
+    if (attempt?.catch) {
+      attempt.catch(() => {
+        heroVideo.removeAttribute('autoplay');
+        heroVideo.style.display = 'none';
+      });
+    }
+  }
 
-  // 4. UI shell talks to the scene in both directions.
+  // 3. The opening shot: a streaming context window, and the title card over it.
+  const { initContextWindow } = await import('./modules/context-window.js');
+  boot('contextWindow', () => initContextWindow(one('#contextWindow')));
+
   const { initUI } = await import('./modules/ui.js');
-  const ui = boot('ui', () => initUI({ scene }));
+  const ui = boot('ui', () => initUI({}));
 
-  // 5. Scroll-driven chapters.
   const { initHeroFlight } = await import('./modules/hero-flight.js');
-  boot('heroFlight', () => initHeroFlight(scene, ui));
+  boot('heroFlight', () => initHeroFlight());
+  void ui;
 
   // Reveals are registered after content render so every card is observed.
   const { initReveals } = await import('./modules/reveals.js');
@@ -115,9 +125,6 @@ async function start() {
     window.clearTimeout(resizeTimer);
     resizeTimer = window.setTimeout(() => ScrollTrigger.refresh(), 220);
   }, { passive: true });
-
-  // The HUD appears only once the scene is actually running.
-  window.setTimeout(() => one('#hud')?.classList.add('ready'), 900);
 
   if (errors.length) console.warn(`[site] ${errors.length} subsystem(s) degraded:`, errors);
 }

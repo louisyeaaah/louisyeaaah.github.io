@@ -133,28 +133,28 @@ em { font-style: italic; }
 }
 .skip-link:focus { transform: translateY(0); }
 
-/* ── Scene (dark chapter canvas) ────────────────────────────── */
-.scene {
+/* ── Opening layers ─────────────────────────────────────────────
+   Two passes, the way a shot is actually built: `hero-plate` is a generated
+   video plate — slow, defocused, loopable — and the canvas above it is the
+   live part, where the tokens are crisp and the pointer connects to them.   */
+.hero-plate {
   position: fixed; inset: 0; z-index: 0;
-  width: 100%; height: 100%; display: block;
   background: var(--night);
+  overflow: hidden;
 }
-.scene-labels { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
-
-.scene-label {
-  position: absolute; top: 0; left: 0;
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 7px 14px;
-  border: 1px solid rgba(242,237,228,.28);
-  background: rgba(13,12,11,.6);
-  font-family: var(--mono); font-size: .7rem; letter-spacing: .02em;
-  color: var(--hero-cream); white-space: nowrap;
-  opacity: 0;
-  transition: opacity .3s var(--ease-out-quart), border-color .2s, color .2s;
-  will-change: transform, opacity;
+.hero-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: .5;
+  filter: saturate(.8) contrast(1.05);
+  transform: scale(1.06);
 }
-.scene-label:hover { border-color: var(--clay); color: #fff; }
-.scene-label-dot { width: 4px; height: 4px; background: var(--clay); flex: none; }
+.hero-canvas {
+  position: fixed; inset: 0; z-index: 2;
+  width: 100%; height: 100%; display: block;
+  pointer-events: none;
+}
 
 /* ── Dark chapter: the title sequence ───────────────────────────
    Structured like a film title card — letterboxed, centred, credits
@@ -172,8 +172,9 @@ em { font-style: italic; }
   position: sticky; top: 0;
   height: 100lvh; min-height: 640px;
   overflow: hidden;
-  display: grid; place-items: center;
-  padding: 0 var(--margin);
+  display: grid;
+  place-items: start center;
+  padding: clamp(84px, 11vh, 130px) var(--margin) 0;
 }
 
 /* Letterbox. Crops the frame toward ~1.85:1 and closes in on load. */
@@ -195,13 +196,14 @@ em { font-style: italic; }
   z-index: 1;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 62% 54% at 50% 52%,
-      rgba(13,12,11,.74) 0%,
-      rgba(13,12,11,.46) 44%,
-      rgba(13,12,11,.08) 74%,
-      rgba(13,12,11,0) 90%),
-    linear-gradient(180deg, rgba(13,12,11,.92) 0%, rgba(13,12,11,0) 20%,
-                            rgba(13,12,11,0) 74%, rgba(13,12,11,.94) 100%);
+    radial-gradient(ellipse 74% 46% at 50% 36%,
+      rgba(13,12,11,.90) 0%,
+      rgba(13,12,11,.62) 42%,
+      rgba(13,12,11,.10) 76%,
+      rgba(13,12,11,0) 92%),
+    linear-gradient(180deg, rgba(13,12,11,.94) 0%, rgba(13,12,11,.25) 26%,
+                            rgba(13,12,11,0) 52%, rgba(13,12,11,.55) 88%,
+                            rgba(13,12,11,.96) 100%);
 }
 
 .hero-inner {
@@ -225,7 +227,7 @@ em { font-style: italic; }
 .hero-title {
   font-family: var(--sans);
   font-weight: 400;
-  font-size: clamp(1.95rem, 5.6vw, 6.2rem);
+  font-size: clamp(1.85rem, 5.1vw, 5.6rem);
   line-height: 1.0;
   letter-spacing: -.012em;
   margin: 0 0 clamp(20px, 3.4vh, 36px);
@@ -238,7 +240,7 @@ em { font-style: italic; }
 .hero-rule {
   width: min(560px, 62vw); height: 1px;
   background: rgba(242,237,228,.14);
-  margin-bottom: clamp(20px, 3.2vh, 36px);
+  margin-bottom: clamp(16px, 2.4vh, 28px);
   overflow: hidden;
 }
 .hero-rule i {
@@ -251,7 +253,7 @@ em { font-style: italic; }
 .hero-credits {
   display: flex; flex-wrap: wrap; justify-content: center;
   gap: clamp(20px, 3.4vw, 56px);
-  margin-bottom: clamp(24px, 3.8vh, 44px);
+  margin-bottom: clamp(18px, 2.6vh, 32px);
 }
 .hero-credits > div { text-align: left; }
 .hero-credits dt {
@@ -267,8 +269,19 @@ em { font-style: italic; }
 
 .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
 
+/* The line that says what the window below is actually doing. */
+.hero-caption {
+  max-width: 58ch;
+  margin: clamp(18px, 2.6vh, 30px) 0 0;
+  font-family: var(--serif);
+  font-size: clamp(1rem, 1.15vw, 1.16rem);
+  line-height: 1.5;
+  color: var(--hero-dim);
+  text-shadow: 0 1px 18px rgba(13,12,11,.9);
+}
+
 .hero-scrollcue {
-  position: absolute; left: 50%; bottom: clamp(52px, 9vh, 104px);
+  position: absolute; left: 50%; bottom: clamp(44px, 7vh, 82px);
   transform: translateX(-50%);
   z-index: 3;
   display: grid; justify-items: center; gap: 10px;
@@ -368,45 +381,6 @@ em { font-style: italic; }
 .btn-line-light:hover { border-color: var(--hero-cream); opacity: 1; }
 .btn-line-dark { border-color: var(--rule); color: var(--ink); }
 .btn-line-dark:hover { border-color: var(--ink); opacity: 1; }
-
-/* ── HUD (dark chapter only) ────────────────────────────────── */
-.hud {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
-  display: flex; align-items: flex-end; gap: 28px;
-  padding: 0 var(--margin) 20px;
-  pointer-events: none;
-  color: var(--hero-dim);
-  opacity: 0;
-  transition: opacity .6s var(--ease-out-quart);
-}
-.hud.ready { opacity: 1; }
-.hud.hidden { opacity: 0; pointer-events: none !important; }
-.hud > * { pointer-events: auto; }
-
-.hud-block { display: grid; gap: 2px; }
-.hud-key {
-  font-family: var(--mono); font-size: .62rem;
-  letter-spacing: .12em; text-transform: uppercase; opacity: .55;
-}
-.hud-val { font-family: var(--mono); font-size: .78rem; color: var(--hero-cream); font-variant-numeric: tabular-nums; }
-
-.hud-hint {
-  font-family: var(--mono); font-size: .68rem;
-  margin-inline: auto; opacity: .55;
-  transition: opacity .4s var(--ease-out-quart);
-}
-.hud-hint.fade { opacity: .22; }
-
-.hud-actions { display: flex; gap: 8px; }
-.hud-btn {
-  padding: 8px 14px; white-space: nowrap;
-  border: 1px solid rgba(242,237,228,.22);
-  font-family: var(--mono); font-size: .66rem;
-  color: var(--hero-dim);
-  transition: color .18s, border-color .18s;
-}
-.hud-btn:hover { color: var(--hero-cream); border-color: rgba(242,237,228,.5); }
-.hud-btn.is-on { color: var(--night); background: var(--clay); border-color: var(--clay); }
 
 /* ── Sections ───────────────────────────────────────────────── */
 .section { padding-block: clamp(88px, 11vw, 150px); }

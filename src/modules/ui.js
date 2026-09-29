@@ -1,11 +1,10 @@
 /**
  * UI shell: the node panel, the command palette, the HUD and nav state.
  *
- * Kept separate from the scene so the 3D layer stays a pure renderer that
- * emits events, and every piece of chrome is plain DOM — searchable, focusable
- * and readable by assistive tech.
+ * Every piece of chrome is plain DOM — searchable, focusable and readable by
+ * assistive tech, with the animated layers kept strictly decorative.
  */
-import { ROLES, CAPABILITIES, ALL_NODES, nodeById } from '../data/graph.js';
+import { ROLES, CAPABILITIES, nodeById } from '../data/graph.js';
 import { one, all } from '../lib/prefs.js';
 
 const esc = (v) =>
@@ -30,7 +29,7 @@ const ZONES = [
   [0.86, 'core'],
 ];
 
-export function initUI({ scene }) {
+export function initUI() {
   const panel = one('#panel');
   const scrim = one('#scrim');
   const palette = one('#palette');
@@ -101,7 +100,6 @@ export function initUI({ scene }) {
     panel?.setAttribute('aria-hidden', 'true');
     scrim?.classList.remove('on');
     all('[data-node]').forEach((el) => el.classList.remove('is-active'));
-    scene?.select(null);
     if (restoreFocus && lastFocused instanceof HTMLElement) {
       lastFocused.focus({ preventScroll: true });
     }
@@ -113,55 +111,14 @@ export function initUI({ scene }) {
     closePanel();
   });
 
-  one('#panelFly')?.addEventListener('click', () => {
-    if (!openId) return;
-    const node = nodeById(openId);
-    closePanel({ restoreFocus: false });
-    flyToNode(openId);
-    node?.section && scrollTo(node.section);
-  });
-
-  /* ── Fly to a node in the 3D scene ──────────────────────────── */
-
-  function flyToNode(id) {
-    const node = nodeById(id);
-    if (!node) return;
-    // Scroll the page so the camera passes that node, then select it.
-    const feature = scene?.graph?.byId?.get(id);
-    const target = feature?.along ?? 0.5;
-    const track = one('#heroTrack');
-    const top = track ? track.offsetTop + (track.offsetHeight - window.innerHeight) * target : 0;
-    window.scrollTo({ top, behavior: 'smooth' });
-    window.setTimeout(() => scene?.select(id), 700);
-  }
-
-  function scrollTo(selector) {
-    document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
   /* ── Clicking any [data-node] opens its panel ───────────────── */
 
   document.addEventListener('click', (event) => {
     const target = event.target.closest?.('[data-node]');
     if (!target) return;
     event.preventDefault();
-    scene?.select(target.dataset.node);
     openPanel(target.dataset.node);
   });
-
-  // The scene emits its own selections (clicking a 3D node).
-  scene?.onSelect?.((id, meta) => {
-    if (!id) return closePanel();
-    openPanel(id, { focus: !meta?.fromScene });
-    if (meta?.fromScene) glowPanel();
-  });
-
-  function glowPanel() {
-    panel?.animate?.(
-      [{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(0)' }],
-      { duration: 260, easing: 'cubic-bezier(.165,.84,.44,1)' },
-    );
-  }
 
   /* ── Command palette ────────────────────────────────────────── */
 
@@ -242,7 +199,6 @@ export function initUI({ scene }) {
     closePalette();
 
     if (item.node) {
-      flyToNode(item.node);
       openPanel(item.node);
     } else if (item.section) {
       scrollTo(`#${item.section}`);
@@ -293,61 +249,6 @@ export function initUI({ scene }) {
     }
   });
 
-  /* ── HUD ────────────────────────────────────────────────────── */
-
-  const depthEl = one('#hudDepth');
-  const zoneEl = one('#hudZone');
-  const hintEl = one('#hudHint');
-
-  one('#hudReset')?.addEventListener('click', () => {
-    scene?.resetOrbit();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  let touring = false;
-  let tourIndex = 0;
-  let tourTimer = null;
-  const tourBtn = one('#hudTour');
-
-  function stopTour() {
-    touring = false;
-    tourBtn?.classList.remove('is-on');
-    if (tourTimer) window.clearTimeout(tourTimer);
-  }
-
-  tourBtn?.addEventListener('click', () => {
-    if (touring) return stopTour();
-    touring = true;
-    tourIndex = 0;
-    tourBtn.classList.add('is-on');
-    stepTour();
-  });
-
-  function stepTour() {
-    if (!touring) return;
-    const node = [...ROLES, ...CAPABILITIES][tourIndex];
-    if (!node) return stopTour();
-    flyToNode(node.id);
-    openPanel(node.id, { focus: false });
-    tourIndex += 1;
-    tourTimer = window.setTimeout(stepTour, 3600);
-  }
-
-  // Any manual scroll cancels the tour.
-  window.addEventListener('wheel', () => touring && stopTour(), { passive: true });
-  window.addEventListener('touchstart', () => touring && stopTour(), { passive: true });
-
-  function setProgress(progress) {
-    if (depthEl) depthEl.textContent = String(Math.round(progress * 240)).padStart(3, '0');
-    if (zoneEl) {
-      let zone = ZONES[0][1];
-      ZONES.forEach(([at, name]) => { if (progress >= at) zone = name; });
-      if (zoneEl.textContent !== zone) zoneEl.textContent = zone;
-    }
-    hud?.classList.toggle('hidden', progress > 0.985);
-    if (hintEl) hintEl.classList.toggle('fade', progress > 0.25);
-  }
-
   /* ── Nav: light/dark state + active section ─────────────────── */
 
   if (lightChapter && 'IntersectionObserver' in window) {
@@ -386,8 +287,6 @@ export function initUI({ scene }) {
   return {
     openPanel,
     closePanel,
-    setProgress,
-    stopTour,
     get openId() { return openId; },
   };
 }

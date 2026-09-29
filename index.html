@@ -61,9 +61,16 @@
 </head>
 <body>
 
-<!-- ── WebGL chapter layer ───────────────────────────────────── -->
-<canvas class="scene" id="scene" aria-hidden="true"></canvas>
-<div class="scene-labels" id="sceneLabels" aria-hidden="true"></div>
+<!-- ── Opening layers ────────────────────────────────────────────
+     `hero-plate` is a rendered (and generated) depth plate; the canvas on
+     top is the live part — the tokens you can actually read.            -->
+<div class="hero-plate" aria-hidden="true">
+  <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto"
+         poster="/assets/context-plate-poster.jpg">
+    <source src="/assets/context-plate.mp4" type="video/mp4">
+  </video>
+</div>
+<canvas class="hero-canvas" id="contextWindow" aria-hidden="true"></canvas>
 
 <a class="skip-link" href="#about">Skip to content</a>
 
@@ -125,30 +132,16 @@
             <a class="btn btn-clay" href="#experience">See the work</a>
             <a class="btn btn-line-light" href="mailto:zhipengye927@gmail.com">Get in touch</a>
           </div>
+
+          <p class="hero-caption hero-reveal">
+            Every model has a window, and everything past it is forgotten.
+            The work is choosing what earns a slot.
+          </p>
         </div>
 
-        <div class="hero-scrollcue hero-reveal" aria-hidden="true">
-          <span class="mono">scroll</span>
-          <i></i>
-        </div>
       </div>
     </div>
 
-    <div class="hud" id="hud">
-      <div class="hud-block">
-        <span class="hud-key">depth</span>
-        <span class="hud-val" id="hudDepth">000</span>
-      </div>
-      <div class="hud-block">
-        <span class="hud-key">zone</span>
-        <span class="hud-val" id="hudZone">approach</span>
-      </div>
-      <div class="hud-hint" id="hudHint">drag to orbit · click a node · ⌘K to search</div>
-      <div class="hud-actions">
-        <button type="button" class="hud-btn" id="hudReset" title="Return the camera to the flight path">reset view</button>
-        <button type="button" class="hud-btn" id="hudTour" title="Fly to each node in turn">guided tour</button>
-      </div>
-    </div>
   </section>
 
   <!-- ═══ LIGHT CHAPTER — the document ════════════════════════ -->
@@ -315,9 +308,7 @@
     <p class="panel-sub" id="panelSub"></p>
     <p class="panel-meta" id="panelMeta"></p>
     <div class="panel-body" id="panelBody"></div>
-    <footer class="panel-foot">
-      <button type="button" class="btn btn-line-dark btn-sm" id="panelFly">View in 3D</button>
-    </footer>
+
   </div>
 </aside>
 <div class="scrim" id="scrim"></div>
