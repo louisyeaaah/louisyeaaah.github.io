@@ -31,10 +31,9 @@ export function initHeroFlight() {
   const rule = one('.hero-rule i');
   const credits = all('.hero-credits > div');
   const cta = one('.hero-cta');
-  const caption = one('.hero-caption');
 
   if (prefersReducedMotion) {
-    gsap.set([kicker, title, one('.hero-credits'), cta, caption], { opacity: 1, filter: 'none', y: 0 });
+    gsap.set([kicker, title, one('.hero-credits'), cta], { opacity: 1, filter: 'none', y: 0 });
     gsap.set(bars, { scaleY: 1 });
     gsap.set(rule, { scaleX: 1 });
     return { destroy() {} };
@@ -68,8 +67,26 @@ export function initHeroFlight() {
   // 6 — call to action
   if (cta) intro.fromTo(cta, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.95 }, 3.0);
 
-  // 7 — the line that names what the window is doing
-  if (caption) intro.fromTo(caption, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 1.1 }, 3.3);
+  /* ── The plate drifts with the page ─────────────────────────────
+     It is position:fixed, so without this it would sit perfectly still while
+     everything scrolls over it and read as a static image. The travel is
+     capped to stay inside the slack that scale() gives us.               */
+  const plate = one('#heroVideo');
+  let ticking = false;
+  function driftPlate() {
+    ticking = false;
+    if (!plate) return;
+    const y = Math.min(window.scrollY * 0.04, 58);
+    plate.style.setProperty('--plate-y', `${y.toFixed(1)}px`);
+  }
+  if (plate && !prefersReducedMotion) {
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(driftPlate);
+    }, { passive: true });
+    driftPlate();
+  }
 
   /* ── Scroll → camera progress (§ kept for the header state only) ── */
   const flight = ScrollTrigger.create({
@@ -103,6 +120,7 @@ export function initHeroFlight() {
 
   return {
     destroy() {
+      window.removeEventListener('scroll', driftPlate);
       flight.kill();
       intro.kill();
       exit?.scrollTrigger?.kill();

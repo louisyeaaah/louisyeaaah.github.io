@@ -3,7 +3,7 @@
  *
  * Boot order matters: content is rendered from data first (so the graph and the
  * document agree), then the scroll engine exists (everything measures against
- * it), then the opening shot, then the UI.
+ * it), then the film plate, then the UI.
  *
  * Every subsystem is wrapped so one failing library cannot take the page down —
  * a real risk when six animation runtimes share a document. Failures land on
@@ -86,11 +86,12 @@ async function start() {
   }
 
   // 3. The opening shot: a streaming context window, and the title card over it.
-  const { initContextWindow } = await import('./modules/context-window.js');
-  boot('contextWindow', () => initContextWindow(one('#contextWindow')));
-
   const { initUI } = await import('./modules/ui.js');
   const ui = boot('ui', () => initUI({}));
+
+  // 3b. The second screen: an interactive map of the work.
+  const { initConstellation } = await import('./modules/constellation.js');
+  boot('constellation', () => initConstellation(one('#constellation')));
 
   const { initHeroFlight } = await import('./modules/hero-flight.js');
   boot('heroFlight', () => initHeroFlight());
@@ -104,15 +105,13 @@ async function start() {
   window.__siteReady = true;
 
   // 6. Interaction + secondary modules.
-  const [{ initInteractions }, { initCapFilter }, { initSideProjects }] = await Promise.all([
+  const [{ initInteractions }, { initCapFilter }] = await Promise.all([
     import('./modules/interactions.js'),
     import('./modules/cap-filter.js'),
-    import('./modules/side-projects.js'),
   ]);
 
   boot('interactions', () => initInteractions());
   boot('capFilter', () => initCapFilter());
-  boot('sideProjects', () => initSideProjects());
 
   // 7. Keep measurements honest after fonts and images settle.
   if (document.fonts?.ready) {

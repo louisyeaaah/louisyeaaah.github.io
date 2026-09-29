@@ -62,15 +62,14 @@
 <body>
 
 <!-- ── Opening layers ────────────────────────────────────────────
-     `hero-plate` is a rendered (and generated) depth plate; the canvas on
-     top is the live part — the tokens you can actually read.            -->
+     A full-bleed film loop, generated offline, fixed behind every section
+     so it keeps playing as the page scrolls over it.                    -->
 <div class="hero-plate" aria-hidden="true">
   <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto"
-         poster="/assets/context-plate-poster.jpg">
-    <source src="/assets/context-plate.mp4" type="video/mp4">
+         poster="/assets/hero-loop-poster.jpg">
+    <source src="/assets/hero-loop.mp4" type="video/mp4">
   </video>
 </div>
-<canvas class="hero-canvas" id="contextWindow" aria-hidden="true"></canvas>
 
 <a class="skip-link" href="#about">Skip to content</a>
 
@@ -85,7 +84,6 @@
       <a href="#about">About</a>
       <a href="#experience">Experience</a>
       <a href="#capabilities">Capabilities</a>
-      <a href="#projects">Projects</a>
       <a href="#contact">Contact</a>
     </div>
     <button type="button" class="nav-cmd" id="paletteOpen">
@@ -97,7 +95,7 @@
 
 <main id="main">
 
-  <!-- ═══ DARK CHAPTER — the 3D agent graph ═══════════════════ -->
+  <!-- ═══ DARK CHAPTER — the title card and the capability map ═══ -->
   <section class="chapter-dark" id="top">
     <div class="hero-track" id="heroTrack">
       <div class="hero-stage" id="heroStage">
@@ -133,10 +131,6 @@
             <a class="btn btn-line-light" href="mailto:zhipengye927@gmail.com">Get in touch</a>
           </div>
 
-          <p class="hero-caption hero-reveal">
-            Every model has a window, and everything past it is forgotten.
-            The work is choosing what earns a slot.
-          </p>
         </div>
 
       </div>
@@ -144,11 +138,21 @@
 
   </section>
 
-  <!-- ═══ LIGHT CHAPTER — the document ════════════════════════ -->
-  <div class="chapter-light">
+    <!-- ── Second screen: the capability map, then the prose ────
+         One section, because "About" is both of these: the map is the
+         claim and the prose under it is the evidence.               -->
+    <section class="section constellation" id="about">
+      <div class="constellation-stage">
+        <canvas id="constellation" class="constellation-canvas"
+                aria-label="Interactive map of roles and capabilities. Drag any node."></canvas>
 
-    <!-- ── About ─────────────────────────────────────────────── -->
-    <section class="section" id="about">
+        <div class="constellation-overlay">
+          <span class="eyebrow">Capability map</span>
+          <h2 class="constellation-title">The shape of the work.</h2>
+          <p class="constellation-hint mono">drag any node &nbsp;·&nbsp; it springs back &nbsp;·&nbsp; click to open</p>
+        </div>
+      </div>
+
       <div class="wrap">
         <header class="section-head reveal">
           <span class="eyebrow">About</span>
@@ -200,6 +204,11 @@
       </div>
     </section>
 
+  <!-- ═══ LIGHT CHAPTER — the document ════════════════════════ -->
+  <div class="chapter-light">
+
+
+
     <!-- ── Experience ────────────────────────────────────────── -->
     <section class="section" id="experience">
       <div class="wrap">
@@ -229,25 +238,6 @@
         </div>
         <p class="sr-only" id="filterStatus" role="status" aria-live="polite"></p>
         <div class="cap-grid" id="capGrid"></div>
-      </div>
-    </section>
-
-    <!-- ── Side projects: live telemetry ────────────────────── -->
-    <section class="section" id="projects">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <span class="eyebrow">Side projects</span>
-          <h2 class="section-title">Things I build when nobody's asking.</h2>
-          <p class="section-note">
-            Live telemetry panels. The data is simulated in your browser — these
-            are product demos, not connected systems.
-          </p>
-        </header>
-
-        <div class="proj-shell reveal">
-          <nav class="proj-rail" id="projectList" aria-label="Side projects"></nav>
-          <div class="proj-panel" id="projectPanel"></div>
-        </div>
       </div>
     </section>
 
