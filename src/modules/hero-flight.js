@@ -67,6 +67,17 @@ export function initHeroFlight() {
   // 6 — call to action
   if (cta) intro.fromTo(cta, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.95 }, 3.0);
 
+  /* ── A light the pointer drags across the plate ───────────────── */
+  const spot = one('.hero-spot');
+  if (spot && !prefersReducedMotion) {
+    let lit = false;
+    window.addEventListener('pointermove', (event) => {
+      spot.style.setProperty('--mx', `${event.clientX}px`);
+      spot.style.setProperty('--my', `${event.clientY}px`);
+      if (!lit) { lit = true; spot.classList.add('is-live'); }
+    }, { passive: true });
+  }
+
   /* ── The plate drifts with the page ─────────────────────────────
      It is position:fixed, so without this it would sit perfectly still while
      everything scrolls over it and read as a static image. The travel is

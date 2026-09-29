@@ -75,7 +75,14 @@ export function initConstellation(canvas) {
     hover: null,
     drag: null,
     pointerDown: false,
+    // A map that opens with nothing selected shows a hairball of 26 crossing
+    // edges and teaches the visitor nothing. Opening with one role already
+    // chosen makes the whole idea legible in the first second.
+    selected: ROLES[0]?.id ?? null,
+    offset: 0,
   };
+
+  const selectedNode = () => (state.drag || state.hover || byId.get(state.selected) || null);
 
   /* ── layout: a bipartite pair of columns, which reads instantly ─── */
   function layout() {
@@ -85,11 +92,11 @@ export function initConstellation(canvas) {
 
     roles.forEach((n, i) => {
       n.hx = padX;
-      n.hy = state.h * (0.20 + (0.62 * i) / Math.max(roles.length - 1, 1));
+      n.hy = state.h * (0.28 + (0.56 * i) / Math.max(roles.length - 1, 1)) + state.offset;
     });
     caps.forEach((n, i) => {
       n.hx = state.w - padX;
-      n.hy = state.h * (0.16 + (0.68 * i) / Math.max(caps.length - 1, 1));
+      n.hy = state.h * (0.26 + (0.60 * i) / Math.max(caps.length - 1, 1)) + state.offset;
     });
 
     // Only seed positions on first layout; afterwards let physics settle.
@@ -159,9 +166,10 @@ export function initConstellation(canvas) {
     const b = byId.get(edge.b);
     if (!a || !b) return;
 
-    const related = !focus || neighbours.get(focus.id)?.has(a.id) || neighbours.get(focus.id)?.has(b.id);
     const lit = focus && (a.id === focus.id || b.id === focus.id);
-    const alpha = focus ? (related ? (lit ? 0.85 : 0.22) : 0.06) : 0.20;
+    // Only the focus's own edges survive. Anything else is a hairline ghost,
+    // so the answer to "what did this role require?" is never buried.
+    const alpha = focus ? (lit ? 0.92 : 0.035) : 0.14;
 
     const mx = (a.x + b.x) / 2;
     ctx.beginPath();
@@ -189,9 +197,9 @@ export function initConstellation(canvas) {
   }
 
   function drawNode(n, focus, t) {
-    const related = !focus || neighbours.get(focus.id)?.has(n.id);
+    const connected = !focus || neighbours.get(focus.id)?.has(n.id);
     const isFocus = focus === n;
-    const alpha = focus ? (related ? 1 : 0.22) : 1;
+    const alpha = focus ? (isFocus ? 1 : (connected ? 0.72 : 0.18)) : 1;
 
     // Breathing halo.
     const pulse = 1 + 0.10 * Math.sin(t * 1.1 + n.x * 0.01);
@@ -227,13 +235,46 @@ export function initConstellation(canvas) {
     ctx.textAlign = isRole ? 'right' : 'left';
     ctx.textBaseline = 'middle';
 
-    ctx.font = `${isFocus ? 500 : 400} 14px "Inter Tight", Inter, system-ui, sans-serif`;
-    ctx.fillStyle = `rgba(242,237,228,${(isFocus ? 1 : 0.88) * alpha})`;
-    ctx.fillText(n.label, lx, n.y - (isRole ? 0 : 7));
+    ctx.font = `${isFocus ? 600 : 400} ${isFocus ? 16 : 15}px "Inter Tight", Inter, system-ui, sans-serif`;
+    ctx.fillStyle = `rgba(242,237,228,${(isFocus ? 1 : 0.90) * alpha})`;
+    ctx.fillText(n.label, lx, n.y - (isRole ? 0 : 8));
 
     ctx.font = '10px "JetBrains Mono", ui-monospace, monospace';
-    ctx.fillStyle = `rgba(168,162,154,${0.75 * alpha})`;
-    ctx.fillText(isRole ? 'role' : (n.short || 'capability'), lx, n.y + (isRole ? 14 : 7));
+    ctx.fillStyle = `rgba(217,119,87,${(isFocus ? 0.95 : 0.55) * alpha})`;
+    ctx.fillText(isRole ? 'role' : (n.short || 'capability'), lx, n.y + (isRole ? 15 : 8));
+  }
+
+  /** Two column headers. Without these the layout is a shape, not a sentence. */
+  function drawHeaders() {
+    const padX = clamp(state.w * 0.24, 130, 260);
+    const y = clamp(state.h * 0.135, 76, 132);
+    const roleCount = nodes.filter((n) => n.kind === 'role').length;
+    const capCount = nodes.filter((n) => n.kind === 'cap').length;
+    const focus = selectedNode();
+
+    ctx.save();
+    ctx.textBaseline = 'alphabetic';
+
+    const col = (x, align, kicker, title) => {
+      ctx.textAlign = align;
+      ctx.font = '10px "JetBrains Mono", ui-monospace, monospace';
+      ctx.fillStyle = 'rgba(217,119,87,.85)';
+      ctx.fillText(kicker, x, y - 22);
+      ctx.font = '500 17px "Inter Tight", Inter, system-ui, sans-serif';
+      ctx.fillStyle = 'rgba(242,237,228,.94)';
+      ctx.fillText(title, x, y);
+      ctx.strokeStyle = 'rgba(242,237,228,.14)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, y + 12);
+      ctx.lineTo(x + (align === 'right' ? -84 : 84), y + 12);
+      ctx.stroke();
+    };
+
+    col(padX, 'right', 'WHERE IT HAPPENED', `${roleCount} roles`);
+    col(state.w - padX, 'left', 'WHAT IT REQUIRED', `${capCount} capabilities`);
+
+    ctx.restore();
   }
 
   function draw() {
@@ -242,6 +283,8 @@ export function initConstellation(canvas) {
     ctx.clearRect(0, 0, state.w, state.h);
 
     const focus = state.drag || state.hover;
+
+    drawHeaders();
 
     edges.forEach((e) => drawEdge(e, focus, state.time));
     nodes.forEach((n) => drawNode(n, focus, state.time));
@@ -283,6 +326,7 @@ export function initConstellation(canvas) {
   function onMove(event) {
     const { x, y } = toLocal(event);
     state.px = x; state.py = y;
+    const wasHover = state.hover;
     if (state.drag) {
       state.drag.x = x; state.drag.y = y;
       state.drag.vx = 0; state.drag.vy = 0;
@@ -291,6 +335,7 @@ export function initConstellation(canvas) {
     }
     const hit = nodeAt(x, y);
     state.hover = hit;
+    if (wasHover !== hit) paintCaption();
     canvas.style.cursor = hit ? 'grab' : 'default';
   }
 
@@ -311,20 +356,54 @@ export function initConstellation(canvas) {
       state.drag.vx = (x - state.drag.x) * 2.5;
       state.drag.vy = (y - state.drag.y) * 2.5;
       state.drag = null;
+      paintCaption();
     }
     state.pointerDown = false;
     canvas.releasePointerCapture?.(event.pointerId);
     canvas.style.cursor = state.hover ? 'grab' : 'default';
   }
 
+  /** The line that says what the current selection means. */
+  function paintCaption() {
+    const el = document.getElementById('mapCaption');
+    if (!el) return;
+    const focus = selectedNode();
+    if (!focus) { el.textContent = 'Hover or click a node'; return; }
+    const n = neighbours.get(focus.id).size - 1;
+    el.textContent = focus.kind === 'role'
+      ? `${focus.label} — ${n} capabilities`
+      : `${focus.label} — ${n} roles`;
+  }
+
+  function select(id) {
+    state.selected = id;
+    paintCaption();
+    const node = byId.get(id);
+    if (node) {
+      // A small pull toward the centre so the choice is unmistakable.
+      node.vx += (state.w / 2 - node.x) * 0.6;
+      node.vy += (state.h / 2 - node.y) * 0.6;
+    }
+    document.querySelector(`[data-node="${id}"]`)?.click?.();
+  }
+
   function onClick(event) {
     const { x, y } = toLocal(event);
     const hit = nodeAt(x, y);
-    // A click opens the same detail panel the rest of the page uses.
-    if (hit) {
-      window.dispatchEvent(new CustomEvent('node:open', { detail: { id: hit.id } }));
-      canvas.dispatchEvent(new CustomEvent('constellation:select', { detail: { id: hit.id }, bubbles: true }));
-      document.querySelector(`[data-node="${hit.id}"]`)?.click?.();
+    if (hit) select(hit.id);
+  }
+
+  function onKey(event) {
+    const list = nodes.filter((n) => n.kind === 'role');
+    const at = list.findIndex((n) => n.id === state.selected);
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      const next = event.key === 'ArrowDown'
+        ? (at + 1 + list.length) % list.length
+        : (at - 1 + list.length) % list.length;
+      select(list[next].id);
+    } else if (event.key === 'Enter' && at >= 0) {
+      select(list[at].id);
     }
   }
 
@@ -336,9 +415,11 @@ export function initConstellation(canvas) {
     if (!state.drag) { state.hover = null; canvas.style.cursor = 'default'; }
   });
   canvas.addEventListener('click', onClick);
+  canvas.addEventListener('keydown', onKey);
   window.addEventListener('resize', resize, { passive: true });
 
   resize();
+  paintCaption();
 
   if (prefersReducedMotion) {
     // Settle the layout analytically, then draw one still frame.
@@ -362,6 +443,24 @@ export function initConstellation(canvas) {
   start();
 
   return {
+    /** Blow the layout apart and let it fall back together. Pure play. */
+    scatter() {
+      nodes.forEach((n) => {
+        const angle = Math.random() * Math.PI * 2;
+        const power = 700 + Math.random() * 900;
+        n.vx += Math.cos(angle) * power;
+        n.vy += Math.sin(angle) * power;
+      });
+    },
+    reset() {
+      paintCaption();
+      nodes.forEach((n) => {
+        n.vx = (n.hx - n.x) * 2.2;
+        n.vy = (n.hy - n.y) * 2.2;
+      });
+      state.selected = ROLES[0]?.id ?? null;
+    },
+    select,
     destroy() {
       stop();
       window.removeEventListener('resize', resize);

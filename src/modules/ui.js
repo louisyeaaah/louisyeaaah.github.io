@@ -12,6 +12,7 @@ const esc = (v) =>
 
 const SECTIONS = [
   { id: 'about', label: 'About' },
+  { id: 'map', label: 'Capability map' },
   { id: 'experience', label: 'Experience' },
   { id: 'capabilities', label: 'Capabilities' },
   { id: 'education', label: 'Education' },

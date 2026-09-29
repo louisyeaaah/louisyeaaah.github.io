@@ -91,7 +91,9 @@ async function start() {
 
   // 3b. The second screen: an interactive map of the work.
   const { initConstellation } = await import('./modules/constellation.js');
-  boot('constellation', () => initConstellation(one('#constellation')));
+  const map = boot('constellation', () => initConstellation(one('#constellation')));
+  one('#mapScatter')?.addEventListener('click', () => map?.scatter?.());
+  one('#mapReset')?.addEventListener('click', () => map?.reset?.());
 
   const { initHeroFlight } = await import('./modules/hero-flight.js');
   boot('heroFlight', () => initHeroFlight());

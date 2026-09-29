@@ -64,6 +64,7 @@
 <!-- ── Opening layers ────────────────────────────────────────────
      A full-bleed film loop, generated offline, fixed behind every section
      so it keeps playing as the page scrolls over it.                    -->
+<div class="hero-spot" id="heroSpot" aria-hidden="true"></div>
 <div class="hero-plate" aria-hidden="true">
   <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto"
          poster="/assets/hero-loop-poster.jpg">
@@ -141,9 +142,10 @@
     <!-- ── Second screen: the capability map, then the prose ────
          One section, because "About" is both of these: the map is the
          claim and the prose under it is the evidence.               -->
-    <section class="section constellation" id="about">
+    <!-- ── Second screen: the capability map ──────────────────── -->
+    <section class="section constellation" id="map">
       <div class="constellation-stage">
-        <canvas id="constellation" class="constellation-canvas"
+        <canvas id="constellation" class="constellation-canvas" tabindex="0"
                 aria-label="Interactive map of roles and capabilities. Drag any node."></canvas>
 
         <div class="constellation-overlay">
@@ -151,61 +153,69 @@
           <h2 class="constellation-title">The shape of the work.</h2>
           <p class="constellation-hint mono">drag any node &nbsp;·&nbsp; it springs back &nbsp;·&nbsp; click to open</p>
         </div>
+      <div class="constellation-bar">
+        <span class="map-caption mono" id="mapCaption">Hover or click a node</span>
+        <button type="button" class="map-btn" id="mapScatter">Shuffle the map</button>
+        <button type="button" class="map-btn" id="mapReset">Put it back</button>
       </div>
-
-      <div class="wrap">
-        <header class="section-head reveal">
-          <span class="eyebrow">About</span>
-          <h2 class="section-title">Ownership from architecture to observability.</h2>
-        </header>
-
-        <div class="cols">
-          <div class="prose reveal" data-no-orbit>
-            <p class="lead">
-              I'm an AI engineer with production experience building agentic AI
-              infrastructure at enterprise scale — currently deploying multi-agent
-              systems, MCP-based tool integrations and LLM applications on AWS at one
-              of Australia's largest financial services institutions.
-            </p>
-            <p>
-              I like the messy middle of AI engineering: the part where a demo has to
-              become a service with owners, guardrails, cost control and dashboards.
-              That has meant building reusable CI/CD workflows adopted across
-              <strong>20+ repositories</strong>, and wiring MCP servers into enterprise
-              infrastructure so tools can be discovered and invoked dynamically.
-            </p>
-            <p>
-              A Python-first background with hands-on frontend experience (Next.js)
-              means I can take a workflow from a model call through to the interface
-              someone actually uses — and a research habit that started with Chinese
-              text-similarity models and natural-language-to-SQL keeps me honest about
-              what these systems can really do.
-            </p>
-          </div>
-
-          <div class="pillars">
-            <article class="pillar reveal">
-              <span class="pillar-num">01</span>
-              <h3>Enterprise agent platforms</h3>
-              <p>Multi-agent systems for code analysis, incident investigation and developer productivity, with MCP tool access across Grafana, Jira and internal services.</p>
-            </article>
-            <article class="pillar reveal">
-              <span class="pillar-num">02</span>
-              <h3>AI observability</h3>
-              <p>Grafana dashboards and telemetry pipelines for evaluating and monitoring production AI applications — so quality is measured, not assumed.</p>
-            </article>
-            <article class="pillar reveal">
-              <span class="pillar-num">03</span>
-              <h3>Developer platforms</h3>
-              <p>Reusable CI/CD workflows, repository migration and vulnerability-scanning automation that teams adopt by default.</p>
-            </article>
-          </div>
-        </div>
       </div>
     </section>
 
   <!-- ═══ LIGHT CHAPTER — the document ════════════════════════ -->
   <div class="chapter-light">
+
+      <!-- ── About ────────────────────────────────────────────── -->
+      <section class="section" id="about">
+      <div class="wrap">
+          <header class="section-head reveal">
+            <span class="eyebrow">About</span>
+            <h2 class="section-title">Ownership from architecture to observability.</h2>
+          </header>
+
+          <div class="cols">
+            <div class="prose reveal" data-no-orbit>
+              <p class="lead">
+                I'm an AI engineer with production experience building agentic AI
+                infrastructure at enterprise scale — currently deploying multi-agent
+                systems, MCP-based tool integrations and LLM applications on AWS at one
+                of Australia's largest financial services institutions.
+              </p>
+              <p>
+                I like the messy middle of AI engineering: the part where a demo has to
+                become a service with owners, guardrails, cost control and dashboards.
+                That has meant building reusable CI/CD workflows adopted across
+                <strong>20+ repositories</strong>, and wiring MCP servers into enterprise
+                infrastructure so tools can be discovered and invoked dynamically.
+              </p>
+              <p>
+                A Python-first background with hands-on frontend experience (Next.js)
+                means I can take a workflow from a model call through to the interface
+                someone actually uses — and a research habit that started with Chinese
+                text-similarity models and natural-language-to-SQL keeps me honest about
+                what these systems can really do.
+              </p>
+            </div>
+
+            <div class="pillars">
+              <article class="pillar reveal">
+                <span class="pillar-num">01</span>
+                <h3>Enterprise agent platforms</h3>
+                <p>Multi-agent systems for code analysis, incident investigation and developer productivity, with MCP tool access across Grafana, Jira and internal services.</p>
+              </article>
+              <article class="pillar reveal">
+                <span class="pillar-num">02</span>
+                <h3>AI observability</h3>
+                <p>Grafana dashboards and telemetry pipelines for evaluating and monitoring production AI applications — so quality is measured, not assumed.</p>
+              </article>
+              <article class="pillar reveal">
+                <span class="pillar-num">03</span>
+                <h3>Developer platforms</h3>
+                <p>Reusable CI/CD workflows, repository migration and vulnerability-scanning automation that teams adopt by default.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
 
 
 
