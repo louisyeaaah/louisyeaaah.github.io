@@ -6,7 +6,6 @@
  * main page's composition. Sizes are read from a JSON file produced by
  * `tools/report-sizes.mjs` against an actual production build.
  */
-import './styles.css';
 import './lab.css';
 
 import { gsap, ScrollTrigger, initScroll, getLenis, scrollToTop } from './lib/scroll.js';
@@ -69,6 +68,7 @@ const VERDICT_LABELS = {
   'adopted-scoped': ['verdict-scoped', 'Adopted · scoped'],
   'adopted-with-caveat': ['verdict-scoped', 'Adopted · caveat'],
   'blocked-on-asset': ['verdict-lab', 'Lab only'],
+  'lab-only': ['verdict-lab', 'Lab only'],
 };
 
 function fmt(bytes) {

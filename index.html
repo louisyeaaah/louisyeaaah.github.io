@@ -6,10 +6,9 @@
 <title>Zhipeng (Louis) Ye — AI Engineer</title>
 <meta name="description" content="Zhipeng (Louis) Ye — AI Engineer in Sydney building enterprise agentic AI infrastructure: multi-agent systems, MCP tooling, and LLM platforms on AWS.">
 <meta name="author" content="Zhipeng (Louis) Ye">
-<meta name="theme-color" content="#05060a">
+<meta name="theme-color" content="#0D0C0B">
 <link rel="canonical" href="https://louisyeaaah.github.io/">
 
-<!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://louisyeaaah.github.io/">
 <meta property="og:title" content="Zhipeng (Louis) Ye — AI Engineer">
@@ -27,12 +26,11 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <script>
-  /* Progressive enhancement guard, applied before first paint:
-     hide `.reveal` elements so nothing flashes before the animation
-     libraries boot — then un-hide everything if they never arrive. */
+  /* Content is never hidden without working scripts: the `.js` class engages
+     the reveal styling, and a timeout un-hides everything if the bundle dies. */
   (function () {
     var d = document.documentElement;
     d.classList.add('js');
@@ -63,585 +61,330 @@
 </head>
 <body>
 
-<!-- ── Preloader ─────────────────────────────────────────────── -->
-<div class="loader" id="loader" aria-hidden="true">
-  <div class="loader-inner">
-    <span class="loader-mark">ZY</span>
-    <span class="loader-bar"><i></i></span>
-  </div>
-</div>
+<!-- ── WebGL chapter layer ───────────────────────────────────── -->
+<canvas class="scene" id="scene" aria-hidden="true"></canvas>
+<div class="scene-labels" id="sceneLabels" aria-hidden="true"></div>
 
-<!-- ── Ambient background ────────────────────────────────────── -->
-<div class="bg" aria-hidden="true">
-  <div class="bg-grid"></div>
-  <div class="bg-aurora a1"></div>
-  <div class="bg-aurora a2"></div>
-  <div class="bg-aurora a3"></div>
-  <div class="bg-noise"></div>
-  <div class="bg-vignette"></div>
-</div>
-<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
-<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+<a class="skip-link" href="#about">Skip to content</a>
 
-<a class="skip-link" href="#main">Skip to content</a>
-
-<!-- ── Navigation ────────────────────────────────────────────── -->
+<!-- ── Nav ───────────────────────────────────────────────────── -->
 <header class="nav-wrap" id="navWrap">
   <nav class="nav" aria-label="Primary">
     <a class="wordmark" href="#top">
-      <span class="wordmark-dot"></span>
-      <span>Zhipeng&nbsp;Ye</span>
+      <span class="wordmark-mark">ZY</span>
+      <span class="wordmark-name">Zhipeng Ye</span>
     </a>
     <div class="nav-links" id="navLinks">
-      <span class="nav-indicator" aria-hidden="true"></span>
       <a href="#about">About</a>
-      <a href="#skills">Skills</a>
       <a href="#experience">Experience</a>
-      <a href="#education">Education</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#contact">Contact</a>
     </div>
-    <div class="nav-actions">
-      <a class="btn btn-ghost btn-sm" href="mailto:zhipengye927@gmail.com">Get in touch</a>
-      <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-        <span></span><span></span>
-      </button>
-    </div>
+    <button type="button" class="nav-cmd" id="paletteOpen">
+      <span>Search</span>
+      <kbd>⌘K</kbd>
+    </button>
   </nav>
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#about">About</a>
-    <a href="#skills">Skills</a>
-    <a href="#experience">Experience</a>
-    <a href="#education">Education</a>
-    <a href="#contact">Contact</a>
-  </div>
 </header>
 
 <main id="main">
 
-  <!-- ── Hero ────────────────────────────────────────────────── -->
-  <section class="hero" id="top">
-    <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
-    <div class="shell hero-grid">
-      <div class="hero-copy">
-        <p class="status-pill reveal" data-reveal>
-          <span class="pulse"></span>
-          AI Engineer at Macquarie Group · Sydney, Australia
-        </p>
-
-        <h1 class="hero-title reveal" data-reveal data-delay="80">
-          Building <span class="grad">agentic&nbsp;AI</span><br>
-          that holds up<br>
-          in production.
-        </h1>
-
-        <p class="hero-roles mono reveal" data-reveal data-delay="160">
-          <span class="prompt">$</span>&nbsp;<span id="typewriter" class="typewriter"></span><span class="caret" aria-hidden="true"></span>
-        </p>
-
-        <p class="hero-intro reveal" data-reveal data-delay="240">
-          I'm <strong>Zhipeng (Louis) Ye</strong> — I design and ship agent infrastructure,
-          MCP-based tool integrations and LLM platforms at enterprise scale. Python-first,
-          observability-obsessed, and comfortable owning an ambiguous problem end-to-end:
-          from architecture through to the telemetry that proves it works.
-        </p>
-
-        <div class="hero-actions reveal" data-reveal data-delay="320">
-          <a class="btn btn-primary" href="#experience" data-magnetic>
-            Explore my work <span aria-hidden="true">↓</span>
-          </a>
-          <a class="btn btn-outline" href="https://www.linkedin.com/in/zhipeng-ye" target="_blank" rel="noopener noreferrer" data-magnetic>
-            LinkedIn <span aria-hidden="true">↗</span>
-          </a>
+  <!-- ═══ DARK CHAPTER — the 3D agent graph ═══════════════════ -->
+  <section class="chapter-dark" id="top">
+    <div class="hero-track" id="heroTrack">
+      <div class="hero-stage">
+        <div class="wrap hero-inner">
+          <span class="hero-eyebrow hero-reveal">AI Engineer · Sydney, Australia</span>
+          <h1 class="hero-title hero-reveal">
+            Building agentic AI that holds up in production.
+          </h1>
+          <p class="hero-sub hero-reveal">
+            I design and ship agent infrastructure, MCP-based tool integrations and
+            LLM platforms at enterprise scale — and the telemetry that proves they work.
+          </p>
+          <div class="hero-cta hero-reveal">
+            <a class="btn btn-clay" href="#experience">See the work</a>
+            <a class="btn btn-line-light" href="mailto:zhipengye927@gmail.com">Get in touch</a>
+          </div>
         </div>
-
-        <dl class="stat-strip reveal" data-reveal data-delay="400">
-          <div class="stat">
-            <dt>Repositories using my CI/CD workflows</dt>
-            <dd><span class="count" data-count="20" data-suffix="+">0</span></dd>
-          </div>
-          <div class="stat">
-            <dt>Production AI plugins supported</dt>
-            <dd><span class="count" data-count="14" data-suffix="+">0</span></dd>
-          </div>
-          <div class="stat">
-            <dt>Hackathon submissions, top-nominated</dt>
-            <dd><span class="count" data-count="300" data-suffix="+">0</span></dd>
-          </div>
-          <div class="stat">
-            <dt>CNY revenue from a platform I led</dt>
-            <dd><span class="count" data-count="5" data-prefix="≈" data-suffix="M">0</span></dd>
-          </div>
-        </dl>
       </div>
-
-      <aside class="hero-card reveal" data-reveal data-delay="200" aria-label="Profile snapshot">
-        <div class="card-shine" aria-hidden="true"></div>
-
-        <!-- Lottie "agent core" — authored for this site (see vector-assets.js) -->
-        <div class="vector-slot vector-slot--badge" data-lottie-slot="/assets/agent-core.json" hidden></div>
-
-        <div class="hero-card-head">
-          <span class="mono mini">// currently</span>
-          <span class="chip chip-live"><span class="pulse"></span>2025 — now</span>
-        </div>
-        <h2 class="hero-card-role">AI Engineer</h2>
-        <p class="hero-card-org">Macquarie Group</p>
-        <p class="hero-card-note">
-          Enterprise AI agent infrastructure for observability, evaluation and operational
-          monitoring of production AI applications.
-        </p>
-
-        <ul class="hero-card-list">
-          <li><span class="ico">▲</span> AWS EKS · RDS · Amazon Bedrock</li>
-          <li><span class="ico">◆</span> LangGraph · LangSmith · Pydantic AI</li>
-          <li><span class="ico">●</span> MCP servers — Grafana · Playwright</li>
-        </ul>
-
-        <div class="hero-card-foot">
-          <span class="mono mini">based in</span>
-          <span>Sydney, Australia</span>
-        </div>
-      </aside>
     </div>
 
-    <div class="scroll-cue" aria-hidden="true">
-      <span class="mono mini">scroll</span>
-      <i></i>
+    <div class="hud" id="hud">
+      <div class="hud-block">
+        <span class="hud-key">depth</span>
+        <span class="hud-val" id="hudDepth">000</span>
+      </div>
+      <div class="hud-block">
+        <span class="hud-key">zone</span>
+        <span class="hud-val" id="hudZone">approach</span>
+      </div>
+      <div class="hud-hint" id="hudHint">drag to orbit · click a node · ⌘K to search</div>
+      <div class="hud-actions">
+        <button type="button" class="hud-btn" id="hudReset" title="Return the camera to the flight path">reset view</button>
+        <button type="button" class="hud-btn" id="hudTour" title="Fly to each node in turn">guided tour</button>
+      </div>
     </div>
   </section>
 
-  <!-- ── Marquee ─────────────────────────────────────────────── -->
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee-track">
-      <span>LangChain</span><span>LangGraph</span><span>LangSmith</span><span>Pydantic AI</span>
-      <span>AWS EKS</span><span>Amazon Bedrock</span><span>Kubernetes</span><span>FastAPI</span>
-      <span>Next.js</span><span>Model Context Protocol</span><span>Grafana</span><span>RAG</span>
-      <span>Python</span><span>CI/CD</span><span>NL→SQL</span><span>Observability</span>
-      <span>LangChain</span><span>LangGraph</span><span>LangSmith</span><span>Pydantic AI</span>
-      <span>AWS EKS</span><span>Amazon Bedrock</span><span>Kubernetes</span><span>FastAPI</span>
-      <span>Next.js</span><span>Model Context Protocol</span><span>Grafana</span><span>RAG</span>
-      <span>Python</span><span>CI/CD</span><span>NL→SQL</span><span>Observability</span>
-    </div>
-  </div>
+  <!-- ═══ LIGHT CHAPTER — the document ════════════════════════ -->
+  <div class="chapter-light">
 
-  <!-- ── About ───────────────────────────────────────────────── -->
-  <section class="section" id="about">
-    <div class="shell">
-      <header class="section-head reveal" data-reveal>
-        <span class="mono eyebrow">01 — About</span>
-        <h2 class="section-title">Ownership from <span class="grad">architecture</span> to observability.</h2>
-      </header>
+    <!-- ── About ─────────────────────────────────────────────── -->
+    <section class="section" id="about">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <span class="eyebrow">About</span>
+          <h2 class="section-title">Ownership from architecture to observability.</h2>
+        </header>
 
-      <div class="about-grid">
-        <div class="about-copy reveal" data-reveal data-delay="80">
-          <p class="lead">
-            I'm an AI engineer with production experience building agentic AI infrastructure
-            at enterprise scale — currently deploying multi-agent systems, MCP-based tool
-            integrations and LLM applications on AWS at one of Australia's largest financial
-            services institutions.
-          </p>
-          <p>
-            I like the messy middle of AI engineering: the part where a demo has to become a
-            service with owners, guardrails, cost control and dashboards. That has meant
-            building reusable CI/CD workflows adopted across <strong>20+ repositories</strong>,
-            leading an internal catalogue for discovering and governing AI agents, skills and
-            plugins, and wiring MCP servers into enterprise infrastructure so tools can be
-            discovered and invoked dynamically.
-          </p>
-          <p>
-            A Python-first background with hands-on frontend experience (Next.js) means I can
-            take a workflow from a model call through to the interface someone actually uses —
-            and a research habit that started with Chinese text-similarity models and
-            natural-language-to-SQL keeps me honest about what these systems can really do.
-          </p>
-        </div>
+        <div class="cols">
+          <div class="prose reveal" data-no-orbit>
+            <p class="lead">
+              I'm an AI engineer with production experience building agentic AI
+              infrastructure at enterprise scale — currently deploying multi-agent
+              systems, MCP-based tool integrations and LLM applications on AWS at one
+              of Australia's largest financial services institutions.
+            </p>
+            <p>
+              I like the messy middle of AI engineering: the part where a demo has to
+              become a service with owners, guardrails, cost control and dashboards.
+              That has meant building reusable CI/CD workflows adopted across
+              <strong>20+ repositories</strong>, leading an internal catalogue for
+              discovering and governing AI agents, skills and plugins, and wiring MCP
+              servers into enterprise infrastructure so tools can be discovered and
+              invoked dynamically.
+            </p>
+            <p>
+              A Python-first background with hands-on frontend experience (Next.js)
+              means I can take a workflow from a model call through to the interface
+              someone actually uses — and a research habit that started with Chinese
+              text-similarity models and natural-language-to-SQL keeps me honest about
+              what these systems can really do.
+            </p>
+          </div>
 
-        <div class="about-panels">
-          <article class="panel reveal" data-reveal data-delay="140">
-            <span class="panel-ico">◈</span>
-            <h3>Enterprise agent platforms</h3>
-            <p>Multi-agent systems for code analysis, incident investigation and developer productivity, with MCP tool access across Grafana, Jira and internal services.</p>
-          </article>
-          <article class="panel reveal" data-reveal data-delay="200">
-            <span class="panel-ico">◉</span>
-            <h3>AI observability</h3>
-            <p>Grafana dashboards and telemetry pipelines for evaluating and monitoring production AI applications — so quality is measured, not assumed.</p>
-          </article>
-          <article class="panel reveal" data-reveal data-delay="260">
-            <span class="panel-ico">▣</span>
-            <h3>Developer platforms</h3>
-            <p>Reusable CI/CD workflows, repository migration and vulnerability-scanning automation that teams adopt by default.</p>
-          </article>
+          <div class="pillars">
+            <article class="pillar reveal">
+              <span class="pillar-num">01</span>
+              <h3>Enterprise agent platforms</h3>
+              <p>Multi-agent systems for code analysis, incident investigation and developer productivity, with MCP tool access across Grafana, Jira and internal services.</p>
+            </article>
+            <article class="pillar reveal">
+              <span class="pillar-num">02</span>
+              <h3>AI observability</h3>
+              <p>Grafana dashboards and telemetry pipelines for evaluating and monitoring production AI applications — so quality is measured, not assumed.</p>
+            </article>
+            <article class="pillar reveal">
+              <span class="pillar-num">03</span>
+              <h3>Developer platforms</h3>
+              <p>Reusable CI/CD workflows, repository migration and vulnerability-scanning automation that teams adopt by default.</p>
+            </article>
+          </div>
         </div>
       </div>
+    </section>
 
-      <!-- ── Agent architecture diagram (animated with anime.js) ── -->
-      <div class="diagram-band">
-        <div class="diagram-card reveal" data-reveal>
+    <!-- ── Experience ────────────────────────────────────────── -->
+    <section class="section" id="experience">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <span class="eyebrow">Experience</span>
+          <h2 class="section-title">Where I've shipped.</h2>
+          <p class="section-note">Each row maps to a node in the graph above — open one for detail.</p>
+        </header>
+        <ol class="timeline" id="timeline"></ol>
+      </div>
+    </section>
+
+    <!-- ── Capabilities ──────────────────────────────────────── -->
+    <section class="section" id="capabilities">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <span class="eyebrow">Capabilities</span>
+          <h2 class="section-title">The stack I build with.</h2>
+        </header>
+        <div class="filter-bar reveal" role="group" aria-label="Filter capabilities">
+          <button type="button" class="filter-chip is-active" data-filter="all" aria-pressed="true">All<span class="filter-count">6</span></button>
+          <button type="button" class="filter-chip" data-filter="agents" aria-pressed="false">Agents<span class="filter-count">1</span></button>
+          <button type="button" class="filter-chip" data-filter="platform" aria-pressed="false">Platform<span class="filter-count">2</span></button>
+          <button type="button" class="filter-chip" data-filter="cloud" aria-pressed="false">Cloud<span class="filter-count">1</span></button>
+          <button type="button" class="filter-chip" data-filter="data" aria-pressed="false">Data<span class="filter-count">1</span></button>
+          <button type="button" class="filter-chip" data-filter="product" aria-pressed="false">Product<span class="filter-count">1</span></button>
+        </div>
+        <p class="sr-only" id="filterStatus" role="status" aria-live="polite"></p>
+        <div class="cap-grid" id="capGrid"></div>
+      </div>
+    </section>
+
+    <!-- ── Architecture ──────────────────────────────────────── -->
+    <section class="section" id="architecture">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <span class="eyebrow">Architecture</span>
+          <h2 class="section-title">How the pieces fit together.</h2>
+        </header>
+
+        <div class="diagram-card reveal" data-no-orbit>
           <div class="diagram-head">
-            <h3 class="diagram-title">How the pieces fit together</h3>
-            <span class="diagram-scramble mono">agentic platform · end to end</span>
+            <h3 class="diagram-title">Agentic platform, end to end</h3>
+            <span class="diagram-scramble">trace · evaluate · govern</span>
           </div>
 
           <svg class="diagram" viewBox="0 0 1000 340" role="img"
                aria-label="Architecture diagram: an agent orchestrator discovers tools through an MCP tool layer that invokes Grafana, Jira and internal services. The orchestrator calls Amazon Bedrock for inference, emits traces to observability and evaluation tooling, and is served on AWS EKS and RDS.">
             <defs>
-              <linearGradient id="diagramEdge" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%"   stop-color="#38bdf8"/>
-                <stop offset="55%"  stop-color="#a855f7"/>
-                <stop offset="100%" stop-color="#f472b6"/>
-              </linearGradient>
-              <marker id="diagramArrow" viewBox="0 0 10 10" refX="9" refY="5"
-                      markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(160,175,210,.75)"/>
+              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(20,20,19,.42)"/>
               </marker>
             </defs>
-
-            <!-- edges -->
             <g class="diagram-edges" fill="none">
-              <path class="diagram-edge" id="edge-a-c" d="M 274 79 C 312 79 337 79 375 79"
-                    marker-end="url(#diagramArrow)"/>
-              <path class="diagram-edge" id="edge-c-d" d="M 625 79 C 663 79 688 79 726 79"
-                    marker-end="url(#diagramArrow)"/>
-              <path class="diagram-edge" id="edge-a-e" d="M 100 118 L 100 214"
-                    marker-end="url(#diagramArrow)"/>
-              <path class="diagram-edge" id="edge-a-b" d="M 198 118 C 198 175 375 165 375 214"
-                    marker-end="url(#diagramArrow)"/>
-              <path class="diagram-edge" id="edge-b-f" d="M 625 261 C 663 261 688 261 726 261"
-                    marker-end="url(#diagramArrow)"/>
+              <path class="diagram-edge" d="M 274 79 C 312 79 337 79 375 79" marker-end="url(#arrow)"/>
+              <path class="diagram-edge" d="M 625 79 C 663 79 688 79 726 79" marker-end="url(#arrow)"/>
+              <path class="diagram-edge" d="M 100 118 L 100 214" marker-end="url(#arrow)"/>
+              <path class="diagram-edge" d="M 198 118 C 198 175 375 165 375 214" marker-end="url(#arrow)"/>
+              <path class="diagram-edge" d="M 625 261 C 663 261 688 261 726 261" marker-end="url(#arrow)"/>
             </g>
-
-            <!-- edge captions -->
             <g class="diagram-captions">
-              <text class="diagram-caption" x="324" y="64"  text-anchor="middle">discovers</text>
-              <text class="diagram-caption" x="675" y="64"  text-anchor="middle">invokes</text>
+              <text class="diagram-caption" x="324" y="64" text-anchor="middle">discovers</text>
+              <text class="diagram-caption" x="675" y="64" text-anchor="middle">invokes</text>
               <text class="diagram-caption" x="112" y="172" text-anchor="start">traces</text>
               <text class="diagram-caption" x="292" y="176" text-anchor="middle">inference</text>
               <text class="diagram-caption" x="675" y="246" text-anchor="middle">served on</text>
             </g>
-
-            <!-- nodes -->
             <g class="diagram-nodes">
-              <g class="diagram-node" data-tone="blue">
-                <rect x="24" y="40" width="250" height="78" rx="16"/>
-                <circle class="node-dot" cx="52" cy="79" r="5"/>
+              <g class="diagram-node" data-tone="accent">
+                <rect x="24" y="40" width="250" height="78" rx="2"/>
+                <circle class="node-dot" cx="52" cy="79" r="4"/>
                 <text class="node-title" x="72" y="74">Agent Orchestrator</text>
-                <text class="node-sub"   x="72" y="96">LangGraph · multi-agent</text>
+                <text class="node-sub" x="72" y="96">LangGraph · multi-agent</text>
               </g>
-
-              <g class="diagram-node" data-tone="violet">
-                <rect x="375" y="40" width="250" height="78" rx="16"/>
-                <circle class="node-dot" cx="403" cy="79" r="5"/>
+              <g class="diagram-node" data-tone="data">
+                <rect x="375" y="40" width="250" height="78" rx="2"/>
+                <circle class="node-dot" cx="403" cy="79" r="4"/>
                 <text class="node-title" x="423" y="74">MCP Tool Layer</text>
-                <text class="node-sub"   x="423" y="96">dynamic tool discovery</text>
+                <text class="node-sub" x="423" y="96">dynamic tool discovery</text>
               </g>
-
-              <g class="diagram-node" data-tone="pink">
-                <rect x="726" y="40" width="250" height="78" rx="16"/>
-                <circle class="node-dot" cx="754" cy="79" r="5"/>
+              <g class="diagram-node" data-tone="data">
+                <rect x="726" y="40" width="250" height="78" rx="2"/>
+                <circle class="node-dot" cx="754" cy="79" r="4"/>
                 <text class="node-title" x="774" y="74">Grafana · Jira · Internal</text>
-                <text class="node-sub"   x="774" y="96">downstream services</text>
+                <text class="node-sub" x="774" y="96">downstream services</text>
               </g>
-
-              <g class="diagram-node" data-tone="violet">
-                <rect x="24" y="222" width="250" height="78" rx="16"/>
-                <circle class="node-dot" cx="52" cy="261" r="5"/>
+              <g class="diagram-node" data-tone="data">
+                <rect x="24" y="222" width="250" height="78" rx="2"/>
+                <circle class="node-dot" cx="52" cy="261" r="4"/>
                 <text class="node-title" x="72" y="256">Observability &amp; Eval</text>
-                <text class="node-sub"   x="72" y="278">LangSmith · Grafana</text>
+                <text class="node-sub" x="72" y="278">LangSmith · Grafana</text>
               </g>
-
-              <g class="diagram-node" data-tone="blue">
-                <rect x="375" y="222" width="250" height="78" rx="16"/>
-                <circle class="node-dot" cx="403" cy="261" r="5"/>
+              <g class="diagram-node" data-tone="accent">
+                <rect x="375" y="222" width="250" height="78" rx="2"/>
+                <circle class="node-dot" cx="403" cy="261" r="4"/>
                 <text class="node-title" x="423" y="256">Amazon Bedrock</text>
-                <text class="node-sub"   x="423" y="278">LLM inference</text>
+                <text class="node-sub" x="423" y="278">LLM inference</text>
               </g>
-
-              <g class="diagram-node" data-tone="pink">
-                <rect x="726" y="222" width="250" height="78" rx="16"/>
-                <circle class="node-dot" cx="754" cy="261" r="5"/>
+              <g class="diagram-node" data-tone="data">
+                <rect x="726" y="222" width="250" height="78" rx="2"/>
+                <circle class="node-dot" cx="754" cy="261" r="4"/>
                 <text class="node-title" x="774" y="256">AWS EKS · RDS</text>
-                <text class="node-sub"   x="774" y="278">runtime &amp; data layers</text>
+                <text class="node-sub" x="774" y="278">runtime &amp; data layers</text>
               </g>
             </g>
-
-            <!-- travelling traffic dots, positioned by anime.js createMotionPath -->
             <g class="diagram-pulses">
-              <circle class="diagram-pulse" cx="0" cy="0" r="3.6"/>
-              <circle class="diagram-pulse" cx="0" cy="0" r="3.6"/>
-              <circle class="diagram-pulse" cx="0" cy="0" r="3.6"/>
-              <circle class="diagram-pulse" cx="0" cy="0" r="3.6"/>
-              <circle class="diagram-pulse" cx="0" cy="0" r="3.6"/>
+              <circle class="diagram-pulse" cx="0" cy="0" r="3.4"/>
+              <circle class="diagram-pulse" cx="0" cy="0" r="3.4"/>
+              <circle class="diagram-pulse" cx="0" cy="0" r="3.4"/>
+              <circle class="diagram-pulse" cx="0" cy="0" r="3.4"/>
+              <circle class="diagram-pulse" cx="0" cy="0" r="3.4"/>
             </g>
           </svg>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ── Skills ──────────────────────────────────────────────── -->
-  <section class="section" id="skills">
-    <div class="shell">
-      <header class="section-head reveal" data-reveal>
-        <span class="mono eyebrow">02 — Capabilities</span>
-        <h2 class="section-title">The stack I <span class="grad">build with</span>.</h2>
-      </header>
-
-      <!-- Filtering drives AutoAnimate's FLIP reflow of the grid below -->
-      <div class="filter-bar" role="group" aria-label="Filter capabilities by area">
-        <button type="button" class="filter-chip is-active" data-filter="all"      data-label="all areas" aria-pressed="true">All <span class="filter-count">6</span></button>
-        <button type="button" class="filter-chip" data-filter="agents"   data-label="agents"    aria-pressed="false">Agents <span class="filter-count">2</span></button>
-        <button type="button" class="filter-chip" data-filter="platform" data-label="platform"  aria-pressed="false">Platform <span class="filter-count">3</span></button>
-        <button type="button" class="filter-chip" data-filter="cloud"    data-label="cloud"     aria-pressed="false">Cloud <span class="filter-count">1</span></button>
-        <button type="button" class="filter-chip" data-filter="product"  data-label="full-stack" aria-pressed="false">Full-stack <span class="filter-count">1</span></button>
+    <!-- ── Education ─────────────────────────────────────────── -->
+    <section class="section" id="education">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <span class="eyebrow">Foundations</span>
+          <h2 class="section-title">Education &amp; recognition.</h2>
+        </header>
+        <div class="edu-grid" id="eduGrid"></div>
       </div>
-      <p class="filter-status" id="filterStatus" role="status" aria-live="polite">6 capabilities shown</p>
+    </section>
 
-      <div class="skill-grid">
-        <article class="skill-card reveal" data-reveal data-cat="agents" data-tilt>
-          <div class="skill-glow"></div>
-          <span class="skill-num mono">01</span>
-          <h3>AI Agents &amp; Multi-Agent Systems</h3>
-          <p>Designed and deployed production multi-agent systems for observability, incident investigation and code analysis.</p>
-          <ul class="tags"><li>LangChain</li><li>LangGraph</li><li>LangSmith</li><li>Pydantic AI</li></ul>
-        </article>
-
-        <article class="skill-card reveal" data-reveal data-delay="70" data-cat="agents platform" data-tilt>
-          <div class="skill-glow"></div>
-          <span class="skill-num mono">02</span>
-          <h3>MCP — Model Context Protocol</h3>
-          <p>Adapted and deployed MCP servers into enterprise infrastructure, enabling dynamic tool discovery and invocation.</p>
-          <ul class="tags"><li>MCP servers</li><li>Grafana</li><li>Playwright</li><li>Tool discovery</li></ul>
-        </article>
-
-        <article class="skill-card reveal" data-reveal data-delay="140" data-cat="cloud" data-tilt>
-          <div class="skill-glow"></div>
-          <span class="skill-num mono">03</span>
-          <h3>Cloud &amp; Container Infrastructure</h3>
-          <p>Deployed and operated production agent services with supporting data layers and managed LLM access.</p>
-          <ul class="tags"><li>AWS EKS</li><li>RDS</li><li>Bedrock</li><li>Kubernetes</li></ul>
-        </article>
-
-        <article class="skill-card reveal" data-reveal data-delay="210" data-cat="product" data-tilt>
-          <div class="skill-glow"></div>
-          <span class="skill-num mono">04</span>
-          <h3>Full-Stack Development</h3>
-          <p>Python-first, with hands-on frontend experience shipping the interface on top of the backend.</p>
-          <ul class="tags"><li>Python</li><li>FastAPI</li><li>RESTful APIs</li><li>Next.js</li></ul>
-        </article>
-
-        <article class="skill-card reveal" data-reveal data-delay="280" data-cat="platform" data-tilt>
-          <div class="skill-glow"></div>
-          <span class="skill-num mono">05</span>
-          <h3>AI Observability &amp; Platform Engineering</h3>
-          <p>Grafana dashboards, telemetry pipelines and automated investigation tooling for production AI systems.</p>
-          <ul class="tags"><li>Grafana</li><li>Telemetry</li><li>Evaluation</li><li>Incident tooling</li></ul>
-        </article>
-
-        <article class="skill-card reveal" data-reveal data-delay="350" data-cat="platform" data-tilt>
-          <div class="skill-glow"></div>
-          <span class="skill-num mono">06</span>
-          <h3>CI/CD &amp; Developer Platforms</h3>
-          <p>Reusable CI/CD workflows adopted across 20+ repositories, plus repository migration and vulnerability-scanning automation.</p>
-          <ul class="tags"><li>GitHub Actions</li><li>Reusable workflows</li><li>Migration</li><li>Vuln scanning</li></ul>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Experience ──────────────────────────────────────────── -->
-  <section class="section" id="experience">
-    <div class="shell">
-      <header class="section-head reveal" data-reveal>
-        <span class="mono eyebrow">03 — Experience</span>
-        <h2 class="section-title">Where I've <span class="grad">shipped</span>.</h2>
-      </header>
-
-      <ol class="timeline">
-        <span class="timeline-line" aria-hidden="true"></span>
-
-        <li class="tl-item reveal" data-reveal>
-          <span class="tl-node" aria-hidden="true"></span>
-          <div class="tl-card">
-            <div class="tl-top">
-              <div>
-                <h3>AI Engineer</h3>
-                <p class="tl-org">Macquarie Group <span class="sep">·</span> Sydney, Australia</p>
-              </div>
-              <span class="chip">2025 — Present</span>
+    <!-- ── Contact ───────────────────────────────────────────── -->
+    <section class="section" id="contact">
+      <div class="wrap">
+        <div class="contact-grid">
+          <div class="reveal">
+            <span class="eyebrow">Contact</span>
+            <h2 class="contact-title">Let's build something that survives production.</h2>
+            <p class="contact-sub">
+              Happy to talk about agent architecture, MCP tooling, LLM observability —
+              or the unglamorous platform work that makes them usable.
+            </p>
+            <div class="contact-actions">
+              <a class="btn btn-clay" href="mailto:zhipengye927@gmail.com">zhipengye927@gmail.com</a>
+              <a class="btn btn-line-dark" href="https://www.linkedin.com/in/zhipeng-ye" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
             </div>
-            <ul class="bullets">
-              <li>Designed and built enterprise <strong>AI Agent infrastructure</strong> for observability, evaluation and operational monitoring of production AI applications at one of Australia's largest financial services institutions.</li>
-              <li>Deployed agent services on <strong>AWS EKS</strong>, with supporting data layers on <strong>RDS</strong> and LLM access via <strong>Amazon Bedrock</strong>.</li>
-              <li>Developed multi-agent systems for <strong>code analysis</strong>, <strong>incident investigation</strong> and developer-productivity use cases, integrating MCP-based tool access across Grafana, Jira and internal services.</li>
-              <li>Led the internal <strong>AI Builders Catalogue</strong> platform for discovery, governance and lifecycle management of AI agents, skills and plugins, supporting <strong>14+ production plugins</strong>.</li>
-              <li>Built reusable <strong>CI/CD workflows adopted across 20+ repositories</strong>.</li>
-              <li>Built the <strong>Bastion</strong> security-assessment POC at an internal hackathon — nominated for Best Overall and Best Use of Data among <strong>300+ submissions</strong>.</li>
-            </ul>
           </div>
-        </li>
-
-        <li class="tl-item reveal" data-reveal>
-          <span class="tl-node" aria-hidden="true"></span>
-          <div class="tl-card">
-            <div class="tl-top">
-              <div>
-                <h3>AI Engineer</h3>
-                <p class="tl-org">Synogize <span class="sep">·</span> Sydney, Australia</p>
-              </div>
-              <span class="chip">2024 — 2025</span>
-            </div>
-            <ul class="bullets">
-              <li>Developed multi-agent systems, including <strong>agentic RAG architectures</strong>, and contributed to system architecture design and decision-making.</li>
-              <li>Researched and compared solutions for <strong>Natural Language to SQL</strong> translation.</li>
-            </ul>
-          </div>
-        </li>
-
-        <li class="tl-item reveal" data-reveal>
-          <span class="tl-node" aria-hidden="true"></span>
-          <div class="tl-card">
-            <div class="tl-top">
-              <div>
-                <h3>AI Intern</h3>
-                <p class="tl-org">Synogize <span class="sep">·</span> Sydney, Australia</p>
-              </div>
-              <span class="chip">2024</span>
-            </div>
-            <ul class="bullets">
-              <li>Conducted research on <strong>Natural Language to SQL</strong> translation using LLMs and explored multi-agent system design.</li>
-            </ul>
-            <p class="tl-foot">Part-time — preceded the AI Engineer role above.</p>
-          </div>
-        </li>
-
-        <li class="tl-item reveal" data-reveal>
-          <span class="tl-node" aria-hidden="true"></span>
-          <div class="tl-card">
-            <div class="tl-top">
-              <div>
-                <h3>AI Developer</h3>
-                <p class="tl-org">NUVC <span class="sep">·</span> Sydney, Australia</p>
-              </div>
-              <span class="chip">2023 — 2024</span>
-            </div>
-            <ul class="bullets">
-              <li>Built an <strong>LLM / LangChain decision-support tool</strong> for venture-capital workflows.</li>
-              <li>Contributed to both frontend (<strong>Next.js</strong>) and backend development to ensure seamless integration across the system.</li>
-            </ul>
-            <p class="tl-foot">Part-time side venture — concurrent with the Synogize role above.</p>
-          </div>
-        </li>
-
-        <li class="tl-item reveal" data-reveal>
-          <span class="tl-node" aria-hidden="true"></span>
-          <div class="tl-card">
-            <div class="tl-top">
-              <div>
-                <h3>NLP Engineer</h3>
-                <p class="tl-org">Xiaobing.ai <span class="sep">·</span> Suzhou, China</p>
-              </div>
-              <span class="chip">2021 — 2022</span>
-            </div>
-            <ul class="bullets">
-              <li>Built task-oriented chatbots (<strong>Rasa</strong>) and a general-purpose FAQ platform generating millions of dollars in business value.</li>
-              <li>Led development of a <strong>supply-and-demand matching platform</strong> for government services, generating <strong>≈5M CNY</strong> in revenue shortly after launch.</li>
-              <li>Built fuzzy text retrieval and Chinese text-similarity models achieving <strong>state-of-the-art</strong> performance.</li>
-            </ul>
-          </div>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- ── Education & recognition ─────────────────────────────── -->
-  <section class="section" id="education">
-    <div class="shell">
-      <header class="section-head reveal" data-reveal>
-        <span class="mono eyebrow">04 — Foundations</span>
-        <h2 class="section-title">Education &amp; <span class="grad">recognition</span>.</h2>
-      </header>
-
-      <div class="edu-grid">
-        <article class="edu-card reveal" data-reveal>
-          <span class="mono mini">2022 — 2024</span>
-          <h3>Master of Computer Science</h3>
-          <p class="edu-org">The University of Sydney <span class="sep">·</span> Sydney, Australia</p>
-          <p class="edu-body">
-            Key courses: Machine Learning, Deep Learning, NLP, Multimedia Retrieval, Project Management.
-          </p>
-          <div class="capstone">
-            <span class="mono mini">Capstone</span>
-            <p><strong>“Leveraging LLM for Decision Making”</strong> — an AI chatbot using LangChain and LLMs with real-time search integration and a decision-support system.</p>
-          </div>
-        </article>
-
-        <article class="edu-card reveal" data-reveal data-delay="80">
-          <span class="mono mini">Macquarie Group · internal hackathon</span>
-          <h3>Bastion — security assessment POC</h3>
-          <p class="edu-org">Nominated for two awards</p>
-          <p class="edu-body">
-            Nominated for <strong>Best Overall</strong> and <strong>Best Use of Data</strong>
-            among <strong>300+ submissions</strong>.
-          </p>
-          <div class="award-badges">
-            <span class="badge">🏆 Best Overall — nominated</span>
-            <span class="badge">📊 Best Use of Data — nominated</span>
-          </div>
-        </article>
-
-        <article class="edu-card reveal" data-reveal data-delay="160">
-          <span class="mono mini">Languages</span>
-          <h3>Communication</h3>
-          <ul class="lang-list">
-            <li><span>Chinese (Mandarin)</span><span class="lang-level">Native</span></li>
-            <li><span>English</span><span class="lang-level">Fluent</span></li>
-          </ul>
-          <p class="edu-body muted">References available on request.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Contact ─────────────────────────────────────────────── -->
-  <section class="section section-contact" id="contact">
-    <div class="shell">
-      <div class="contact-card reveal" data-reveal>
-        <div class="contact-glow" aria-hidden="true"></div>
-        <!-- tsParticles interactive network mounts here -->
-        <div class="contact-particles" id="contactParticles" aria-hidden="true"></div>
-
-        <span class="mono eyebrow">05 — Contact</span>
-        <h2 class="contact-title">Let's build something that <span class="grad">survives production</span>.</h2>
-        <p class="contact-sub">
-          I'm always happy to talk about agent architecture, MCP tooling, LLM observability —
-          or the unglamorous platform work that makes them usable.
-        </p>
-        <div class="contact-actions">
-          <a class="btn btn-primary" href="mailto:zhipengye927@gmail.com" data-magnetic>
-            zhipengye927@gmail.com
-          </a>
-          <a class="btn btn-outline" href="https://www.linkedin.com/in/zhipeng-ye" target="_blank" rel="noopener noreferrer" data-magnetic>
-            Connect on LinkedIn <span aria-hidden="true">↗</span>
-          </a>
-        </div>
-        <div class="contact-meta mono mini">
-          <span>📍 Sydney, Australia</span>
-          <span>✉ zhipengye927@gmail.com</span>
+          <dl class="contact-meta reveal">
+            <div><dt>based</dt><dd>Sydney, Australia</dd></div>
+            <div><dt>languages</dt><dd>Chinese (native) · English (fluent)</dd></div>
+            <div><dt>references</dt><dd>Available on request</dd></div>
+          </dl>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <p class="mono">© <span id="year">2025</span> Zhipeng (Louis) Ye</p>
+        <p class="mono"><a href="/lab.html">Animation lab</a> · <a href="/third-party/README.md">Third-party licences</a></p>
+        <a class="mono" href="#top">Back to top ↑</a>
+      </div>
+    </footer>
+  </div>
 </main>
 
-<footer class="footer">
-  <div class="shell footer-inner">
-    <p class="mono mini">© <span id="year">2025</span> Zhipeng (Louis) Ye</p>
-    <p class="mono mini">
-      <a class="to-top" href="/lab.html">Animation lab →</a>
-    </p>
-    <a class="to-top mono mini" href="#top">Back to top ↑</a>
+<!-- ── Node detail panel ─────────────────────────────────────── -->
+<aside class="panel" id="panel" aria-hidden="true" aria-label="Node details">
+  <div class="panel-inner">
+    <header class="panel-head">
+      <span class="panel-kind" id="panelKind">node</span>
+      <button type="button" class="panel-close" id="panelClose" aria-label="Close details">✕</button>
+    </header>
+    <h2 class="panel-title" id="panelTitle"></h2>
+    <p class="panel-sub" id="panelSub"></p>
+    <p class="panel-meta" id="panelMeta"></p>
+    <div class="panel-body" id="panelBody"></div>
+    <footer class="panel-foot">
+      <button type="button" class="btn btn-line-dark btn-sm" id="panelFly">View in 3D</button>
+    </footer>
   </div>
-</footer>
+</aside>
+<div class="scrim" id="scrim"></div>
+
+<!-- ── Command palette ───────────────────────────────────────── -->
+<div class="palette" id="palette" aria-hidden="true">
+  <div class="palette-box" role="dialog" aria-modal="true" aria-label="Search">
+    <input type="text" class="palette-input" id="paletteInput" placeholder="Search roles, capabilities, sections…" autocomplete="off" spellcheck="false">
+    <ul class="palette-list" id="paletteList" role="listbox" aria-label="Results"></ul>
+    <footer class="palette-foot">
+      <span>↑↓ navigate</span><span>↵ open</span><span>esc close</span>
+    </footer>
+  </div>
+</div>
+
+<!-- ── Loader ────────────────────────────────────────────────── -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-inner">
+    <span class="loader-label">initialising scene</span>
+    <span class="loader-bar"><i id="loaderBar"></i></span>
+  </div>
+</div>
 
 </body>
 </html>

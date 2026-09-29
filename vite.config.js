@@ -9,7 +9,9 @@ export default defineConfig({
     target: 'es2022',
     outDir: 'dist',
     assetsDir: 'assets',
-    cssCodeSplit: false,
+    // Must stay true: with `false` Vite emits ONE stylesheet for every entry,
+    // so lab.css leaked its light `.nav-wrap` background onto the portfolio.
+    cssCodeSplit: true,
     sourcemap: false,
     reportCompressedSize: true,
     chunkSizeWarningLimit: 1500,

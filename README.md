@@ -8,188 +8,195 @@ Personal portfolio site for **Zhipeng (Louis) Ye** — AI Engineer, Sydney.
 
 ## What this is
 
-A dark, heavily animated single-page portfolio, plus a second page
-(`lab.html`) that documents and demonstrates the animation libraries it is
-built from.
+Two chapters and a hard cut between them:
 
-It is a real Vite build — not a hand-written static folder — because the
-brief was to evaluate ten animation libraries and **measure** them, and you
-cannot attribute bytes to a library without a bundler.
+1. **A dark WebGL chapter.** An agent-graph constellation — eleven nodes wired by
+   the résumé's own data — that the camera flies through as you scroll. You can
+   drag to orbit, hover a node to light it up, click one to open it, or press
+   `⌘K` and search. A pinned 240vh scroll-scrub, rendered with three.js and a
+   bloom + grain + chromatic-aberration chain.
+2. **A long light chapter.** Warm ivory, serif body copy, no decoration. The
+   résumé, as a document.
+
+The point of the split is that the 3D earns attention once, at the top, and then
+gets out of the way. A portfolio's job is to be read.
 
 ```bash
 npm install
 npm run dev       # http://localhost:5173
 npm run build     # -> dist/
-npm run size      # measure per-library cost from dist/
-npm run preview   # serve the production build
+npm run size      # measure per-library gzip from a real build
+npm run preview
 ```
 
 ---
 
-## The animation stack, and why
+## Design system
 
-Ten libraries were installed, integrated, measured and judged. Sizes below are
-**gzip, per library**, taken from the emitted production chunks
-(`npm run size` regenerates this table from a real build — see
-[`src/lib/bundle-sizes.json`](src/lib/bundle-sizes.json)).
+The visual language is derived from a measured teardown of Anthropic's
+model-launch pages (raw CSS tokens, font tables, and rendered pixel samples),
+synthesised with a WebGL chapter. The rules that do the work:
 
-| Library | Gzip | Verdict | Role |
-|---|---:|---|---|
-| three.js | 129.7 KB | Adopted · heavy | Hero: GLSL aurora shader + 3D point constellation |
-| GSAP + ScrollTrigger | 42.8 KB | Adopted · core | Timeline sequencing, scroll scrubbing, staggered reveals |
-| Rive | 52.4 KB | **Lab only** | Technically excellent; blocked on the asset pipeline |
-| Lottie (`lottie_light`) | 45.8 KB | Adopted | Animated "agent core" badge in the hero card |
-| tsParticles | 28.3 KB | Adopted · scoped | Interactive particle field behind the contact card |
-| Motion | 18.8 KB | Adopted | Spring physics for every short UI interaction |
-| anime.js v4 | 16.0 KB | Adopted | The agent-architecture SVG diagram |
-| Lenis | 5.2 KB | Adopted · global | Inertial smooth scrolling |
-| SplitType | 4.2 KB | Adopted | Line/word splitting for masked headline reveals |
-| AutoAnimate | 3.0 KB | Adopted · scoped | FLIP reflow of the capability grid when filtered |
+| Rule | Value |
+|---|---|
+| Display letter-spacing | **`0`** — negative tracking is a template tell |
+| Headings | **weight 500**, never 700 |
+| Body | **serif** at 1.5 leading, against sans headings |
+| Headline ramp | `clamp(2rem, 3.33vw, 2.8rem)` @ 1.1 · hero `clamp(2.1rem, 6.6vw, 7rem)` @ 1.05 |
+| Eyebrows | `.875rem` · `500` · `letter-spacing: .12em` · uppercase |
+| Neutrals | warm only — `#FAF9F5` cream → `#141413` ink. **Never `#000`** |
+| Accent | exactly one: clay `#D97757` |
+| Radius | `0` on type and buttons; pills and media only |
+| Depth | one-step surface shifts, not shadows |
+| Gradients | **zero decorative ones**, and no gradient text |
+| Rhythm | **one** dark chapter, then a long light body — not alternating |
+| Reveals | `opacity .2s` + `translateY(32px) .5s` on `cubic-bezier(.165,.84,.44,1)` |
+| Hover | `opacity: .85`, 150–200 ms |
 
-**Critical path** (what a first visit to `/` actually downloads):
-**67.1 KB gzip** — HTML, CSS, GSAP, Lenis and the app code. Every heavy media
-library is a dynamic import, and `vite.config.js` filters them out of Vite's
-`modulepreload` injection so they are not fetched until they are needed.
+Fonts: **Geist** (the closest free relative of Anthropic Sans — their font's own
+name table reads *"BSPK x Geist x Anthropic"*), **Source Serif 4** (nearest free
+stand-in for Tiempos Text), **JetBrains Mono** (the same face they ship).
 
-### How the responsibilities were split
+---
 
-Three animation runtimes coexisting is a real risk of doing the same job three
-ways, so ownership was partitioned deliberately:
+## The animation stack, and what got cut
 
-- **GSAP owns *when*.** Anything with a timeline, a scroll position or a
-  stagger: the hero intro, heading reveals, counters, the scrubbed experience
-  timeline, the velocity-reactive marquee, background parallax.
-- **Motion owns *how it feels*.** Short, retargetable springs: the sliding nav
-  indicator, mobile menu, cursor spotlight, card tilt, magnetic buttons.
-  Re-implementing spring settling on top of GSAP would have been busywork.
-- **anime.js owns *SVG*.** `svg.createDrawable` for path drawing,
-  `svg.createMotionPath` for travelling dots, `scrambleText` for the label.
-  These ship in the box rather than as plugins.
-- **AutoAnimate owns *layout diffs*.** The skills grid reflows because of a
-  click, not a timeline — AutoAnimate watches the parent and interpolates.
-- **tsParticles owns *the contact card only*.** A declarative config replaced
-  ~150 lines of bespoke canvas; it cannot match a purpose-built shader, which
-  is why the hero uses one.
+Ten libraries were installed, integrated, measured and judged. Sizes are **gzip,
+per library**, from the emitted production chunks — `npm run size` regenerates
+the table from a real build (see [`src/lib/bundle-sizes.json`](src/lib/bundle-sizes.json)).
 
-### Notable findings during the evaluation
+**Shipped on the main page (5):**
 
-- **Lottie's full player bundles an `eval`-based expression engine.** The site
-  never uses expressions, so it imports
-  `lottie-web/build/player/lottie_light` instead: **77.6 KB → 45.8 KB gzip**,
-  and the `eval` warning disappears.
-- **tsParticles' `slim` preset is not slim enough.** It registers emoji, image,
-  line, polygon, square and star shapes plus nine interactions this site never
-  touches. Composing the engine from `@tsparticles/basic` + three interactions
-  cut it **45.0 KB → 28.3 KB gzip**. (Composing by hand also means you must
-  load `@tsparticles/plugin-interactivity` yourself — `loadBasic` does not, and
+| Library | Gzip | Role |
+|---|---:|---|
+| three.js | 138.5 KB | The dark chapter: graph, shader floor, bloom/grain/aberration chain |
+| GSAP + ScrollTrigger | 42.8 KB | The pinned hero flight and the scrubbed copy exit |
+| anime.js v4 | 16.0 KB | The agent-architecture diagram: path draw, motion path, scramble |
+| Lenis | 5.2 KB | Inertial smooth scrolling, on the GSAP ticker |
+| AutoAnimate | 3.0 KB | FLIP reflow of the capability grid when filtered |
+
+**Cut to the lab (5) — and that is the result, not an omission:**
+
+| Library | Why it is not on the main page |
+|---|---|
+| SplitType | Anthropic's hero resolves with a 26 px blur-in, not a per-word split. I built both; the blur-in won. |
+| Motion | The reference language is cubic-bezier transitions and `opacity: .85` hovers. Springs were the wrong physics. |
+| tsParticles | The WebGL chapter owns particles now; running both is two systems doing one job. |
+| Lottie | The bespoke asset lived in the hero card the 3D chapter replaced. |
+| Rive | `.riv` can only be authored in the Rive editor, and exporting needs a paid plan. |
+
+All ten remain integrated and demonstrable on [`/lab.html`](https://louisyeaaah.github.io/lab.html).
+
+**Critical path for `/`: 65.6 KB gzip** — HTML, CSS, GSAP, Lenis and app code.
+The scene is a dynamic import; Vite's `modulePreload` filter keeps three.js,
+Lottie, Rive and tsParticles off first paint.
+
+### Bugs found by measuring
+
+- **`lottie_light` instead of the full player** — the only thing separating them
+  is an `eval`-based expression engine this site never uses: **77.6 → 45.8 KB**.
+- **tsParticles' `slim` preset is not slim** — hand-composing from
+  `@tsparticles/basic` + three interactions cut it **45.0 → 30.8 KB**. (You must
+  load `@tsparticles/plugin-interactivity` yourself; `loadBasic` does not, and
   without it every interaction silently no-ops.)
-- **Vite preloads dynamically-imported chunks from the entry HTML.** tsParticles
-  was being fetched on first paint for an effect below the fold. A
-  `build.modulePreload.resolveDependencies` filter removed it, taking the index
-  critical path from **95.4 KB → 67.1 KB gzip**.
-- **Rive is the one that got away.** Its runtime is MIT, needs no attribution,
-  and its player is smaller than Lottie's — but `.riv` is a compiled binary that
-  can only be produced by the Rive editor, and *exporting* one requires a paid
-  plan (Cadet, ~$9/seat/mo). You can play any `.riv` for free, which is what the
-  lab page does with the MIT-licensed `rating.riv`. It is not on the main page
-  only because a star-rating widget says nothing about AI engineering. See
-  [`src/modules/vector-assets.js`](src/modules/vector-assets.js) — `RIVE_SRC`
-  is the single switch that enables it.
+- **`import * as THREE` defeated tree-shaking** — named imports took the chunk
+  from **191 → 138.5 KB gzip**.
+- **`cssCodeSplit: false` leaked `lab.css` onto the portfolio**, giving the main
+  page a light nav bar over its dark hero. Only visible in the built output.
+
+---
+
+## Playability
+
+| Interaction | Where |
+|---|---|
+| **Drag to orbit** | Anywhere on the dark chapter — the two camera inputs (scroll position, look offset) live in separate accumulators so they cannot fight |
+| **Hover a node** | Raycast → the node scales, its edges light up, its label fades in |
+| **Click a node** | Opens the detail panel with that record's résumé content |
+| **`⌘K` / `Ctrl-K`** | Command palette: fuzzy search over roles, capabilities, sections and links, with arrow-key navigation |
+| **Guided tour** | Flies the camera to each node in turn; any manual scroll cancels it |
+| **Reset view** | Returns the camera to the flight path |
+| **Filter chips** | Filters the capability grid with an AutoAnimate FLIP reflow (arrow-key navigable, live region announcing results) |
+| **Click a card or timeline row** | Opens the same node the 3D graph would |
+| **"View in 3D"** | Scrolls the camera back to that node |
 
 ---
 
 ## Architecture
 
 ```
-├── index.html                 # portfolio page (Vite entry)
-├── lab.html                    # library evaluation page
-├── vite.config.js              # manualChunks, modulepreload filter, size naming
-├── public/                     # copied verbatim into dist/
-│   ├── assets/
-│   │   ├── agent-core.json     # bespoke Lottie, generated for this site
-│   │   ├── favicon.svg
-│   │   ├── og.png              # 1200x630 social card
-│   │   ├── lottie/             # third-party Apache-2.0 demo asset
-│   │   └── rive/               # third-party MIT demo asset
-│   └── third-party/            # licence texts + provenance
+├── index.html                 # dark chapter + light chapter
+├── lab.html                   # the ten-library evaluation
+├── vite.config.js             # manualChunks, modulepreload filter, cssCodeSplit
+├── public/                    # copied verbatim into dist/
+│   ├── assets/agent-core.json # bespoke Lottie, generated for this site
+│   └── third-party/           # licence texts + provenance
 ├── src/
-│   ├── main.js                 # orchestrator; per-module error isolation
-│   ├── lab.js                  # the ten live demos + size table
-│   ├── styles.css              # design tokens, layout, components
-│   ├── lab.css
+│   ├── main.js                # orchestrator; per-module error isolation
+│   ├── styles.css             # the design system
+│   ├── data/graph.js          # ONE source of truth: 3D nodes + document body
+│   ├── scene/
+│   │   ├── index.js           # renderer, curve-driven camera rig, picking, labels
+│   │   ├── graph.js           # instanced nodes, edge shader, dust shader, grid
+│   │   ├── post.js            # EffectComposer: bloom → tone map → grade
+│   │   └── palette.js         # colours shared by CSS and GLSL
 │   ├── lib/
-│   │   ├── prefs.js            # motion prefs, capability detection, helpers
-│   │   ├── scroll.js           # Lenis + GSAP + ScrollTrigger wiring
-│   │   ├── split.js            # SplitType wrapper (accessibility-safe)
-│   │   ├── particles-engine.js # minimal hand-composed tsParticles engine
-│   │   └── bundle-sizes.json   # measured sizes + verdict metadata
+│   │   ├── prefs.js           # motion prefs, capability detection
+│   │   ├── scroll.js          # Lenis + ScrollTrigger wiring
+│   │   └── particles-engine.js
 │   └── modules/
-│       ├── hero.js             # three.js shader + points, with 2D fallback
-│       ├── reveals.js          # GSAP entrances + counters
-│       ├── scroll-fx.js        # scrubbed effects, marquee, parallax
-│       ├── nav.js              # Motion-driven nav + mobile menu
-│       ├── interactions.js     # cursor, tilt, magnetic, typewriter
-│       ├── skills-filter.js    # AutoAnimate filter grid
-│       ├── diagram.js          # anime.js architecture diagram
-│       ├── particles.js        # tsParticles contact layer
-│       └── vector-assets.js    # Lottie + Rive loaders
-└── tools/report-sizes.mjs      # measures a real build, writes bundle-sizes.json
+│       ├── content.js         # renders the document FROM data/graph.js
+│       ├── ui.js              # panel, command palette, HUD, nav state
+│       ├── hero-flight.js     # scroll → camera progress + blur-in entrance
+│       ├── reveals.js         # IntersectionObserver + CSS transitions
+│       ├── cap-filter.js      # AutoAnimate
+│       └── diagram.js         # anime.js
+└── tools/report-sizes.mjs     # measures a real build
 ```
 
-### Resilience
+### Notes from building the 3D layer
 
-Six animation runtimes share one document, so failure is contained:
+- `Curve.getPointAt()` (arc-length) not `getPoint()` — otherwise the camera
+  visibly stutters through the control points.
+- Damping uses `1 - exp(-dt·k)`, so the motion is identical at 60/120/144 Hz.
+- `InstancedMesh` bounding spheres are **not** recomputed when instance
+  transforms change, and a stale sphere silently culls the whole graph. The node
+  mesh is `frustumCulled = false`.
+- Additive blending ignores `scene.fog` entirely (fog is a shader chunk, not a
+  pass), so the dust field fades on depth explicitly.
+- All dust motion is in the vertex shader: zero per-frame buffer uploads.
 
-- Every subsystem boots through `boot()` / `safe()` in
-  [`src/main.js`](src/main.js) — a broken library logs and degrades, it does
-  not take the page down. Failures are collected on `window.__siteErrors`.
-- Content is **never** hidden behind JavaScript. A guard in `<head>` hides
-  `.reveal` elements only while scripts are confirmed live, and un-hides
-  everything after 3 seconds if they never arrive.
-- WebGL is feature-detected; without it the hero falls back to a lightweight 2D
-  canvas particle network.
+### Resilience and accessibility
 
-### Accessibility
-
-- `prefers-reduced-motion` is honoured throughout: Lenis is disabled, all
-  animation is skipped, reveal elements are shown immediately, and counters are
-  set to their **final values** rather than left at `0`.
-- SplitType fragments are `aria-hidden` and the container carries an
-  `aria-label`, so screen readers hear one clean sentence instead of letters.
-- The skills filter is a keyboard-operable group with `aria-pressed` state and a
-  live region announcing the result.
-- Skip link, visible focus rings, labelled controls, and the SVG diagram has a
-  full `role="img"` description.
+- Content is **never** hidden without working scripts: a `<head>` guard holds
+  `.reveal`/`.hero-reveal` at `opacity: 0` only while scripts are confirmed live,
+  and un-hides everything after 3 s.
+- Every subsystem boots through `boot()`; failures land on `window.__siteErrors`
+  and degrade instead of throwing.
+- No WebGL → the canvas hides, the `<html>` ground colour shows, and the cream
+  type is still perfectly readable.
+- `prefers-reduced-motion` → Lenis off, camera parks on a single static frame,
+  reveals shown immediately, HUD hidden.
+- The graph is decoration (`aria-hidden`); every record is real DOM text, and
+  the diagram carries a full `role="img"` description.
 
 ---
 
 ## Deploy
 
-GitHub Pages, built by GitHub Actions
-([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)): `npm ci` →
-build → measure sizes → rebuild so the lab page ships fresh numbers → deploy
-`dist/` as the Pages artifact. Push to `main` and the site updates.
-
-Because the repository is named `<username>.github.io`, it is the account's
-**user site** and publishes at the domain root.
-
----
+GitHub Pages via GitHub Actions
+([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)): `npm ci` → build
+→ measure sizes → rebuild so the lab ships fresh numbers → deploy `dist/`.
+Because the repository is named `<username>.github.io`, it publishes at the
+domain root.
 
 ## Third-party assets
 
-The runtimes are MIT. Two artwork files are vendored, each with its licence
-text and provenance recorded in
-[`public/third-party/`](public/third-party/README.md):
-
-- `assets/rive/rating.riv` — MIT, from `rive-app/rive-react`
-- `assets/lottie/echarts-chart.json` — Apache-2.0, from `apache/echarts-www`
-
-`assets/agent-core.json` is original work generated for this project and
-carries no third-party obligations.
-
----
+Runtimes are MIT. Two artwork files are vendored, with licences and provenance in
+[`public/third-party/`](public/third-party/README.md): `rating.riv` (MIT) and
+`echarts-chart.json` (Apache-2.0). `agent-core.json` is original work.
 
 ## Content
 
-Content is derived from the résumé of Zhipeng (Louis) Ye. Contact details
-published here are deliberately limited to email and LinkedIn.
+Derived from the résumé of Zhipeng (Louis) Ye. Contact details are deliberately
+limited to email and LinkedIn.

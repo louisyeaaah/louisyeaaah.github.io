@@ -6,47 +6,34 @@
 <title>Animation lab — Zhipeng (Louis) Ye</title>
 <meta name="description" content="A hands-on evaluation of ten web animation libraries — GSAP, Lenis, Motion, anime.js, three.js, SplitType, Lottie, Rive, tsParticles and AutoAnimate — with real bundle sizes and live demos.">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#05060a">
+<meta name="theme-color" content="#FAF9F5">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <script type="module" src="/src/lab.js"></script>
 </head>
 <body class="lab-body">
 
-<div class="bg" aria-hidden="true">
-  <div class="bg-grid"></div>
-  <div class="bg-aurora a1"></div>
-  <div class="bg-aurora a2"></div>
-  <div class="bg-aurora a3"></div>
-  <div class="bg-noise"></div>
-  <div class="bg-vignette"></div>
-</div>
-<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
-<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
-
-<header class="nav-wrap stuck" id="navWrap">
+<header class="nav-wrap stuck on-light" id="navWrap">
   <nav class="nav" aria-label="Primary">
     <a class="wordmark" href="/">
-      <span class="wordmark-dot"></span>
-      <span>Zhipeng&nbsp;Ye</span>
+      <span class="wordmark-mark">ZY</span>
+      <span class="wordmark-name">Zhipeng Ye</span>
     </a>
     <div class="nav-links">
       <a href="/">← Portfolio</a>
       <a href="#sizes">Sizes</a>
       <a href="#demos">Demos</a>
     </div>
-    <div class="nav-actions">
-      <a class="btn btn-ghost btn-sm" href="#verdicts">Verdicts</a>
-    </div>
+    <a class="btn btn-line-dark btn-sm" href="#verdicts">Verdicts</a>
   </nav>
 </header>
 
 <main class="lab-main">
-  <div class="shell">
+  <div class="wrap">
 
     <section class="lab-hero">
       <span class="mono eyebrow">Animation lab</span>
@@ -435,12 +422,10 @@
 </main>
 
 <footer class="footer">
-  <div class="shell footer-inner">
-    <p class="mono mini">© <span id="year">2025</span> Zhipeng (Louis) Ye</p>
-    <p class="mono mini">
-      Third-party asset licences: <a class="to-top" href="/third-party/README.md">third-party/</a>
-    </p>
-    <a class="to-top mono mini" href="/">← Back to the portfolio</a>
+  <div class="wrap footer-inner">
+    <p class="mono">© <span id="year">2025</span> Zhipeng (Louis) Ye</p>
+    <p class="mono">Third-party asset licences: <a href="/third-party/README.md">third-party/</a></p>
+    <a class="mono" href="/">← Back to the portfolio</a>
   </div>
 </footer>
 

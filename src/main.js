@@ -1,22 +1,19 @@
 /**
  * Site orchestrator.
  *
- * Every subsystem is booted through `boot()` so a failure in one library can
- * never take the rest of the page down with it — a real risk when six
- * animation runtimes share a document. Each failure is surfaced in the console
- * (and collected on `window.__siteErrors`) instead of throwing.
+ * Boot order matters: content is rendered from data first (so the graph and the
+ * document agree), then the scroll engine exists (everything measures against
+ * it), then the 3D scene, then the UI that talks to it.
  *
- * Boot order matters:
- *   1. scroll engine first (Lenis + ScrollTrigger), everything else measures
- *      against the scroll it establishes
- *   2. reveals / scroll effects (register triggers)
- *   3. UI chrome + pointer interactions
- *   4. heavy optional media (WebGL hero, tsParticles) — lazily
+ * Every subsystem is wrapped so one failing library cannot take the page down —
+ * a real risk when six animation runtimes share a document. Failures land on
+ * `window.__siteErrors` instead of throwing.
  */
 import './styles.css';
 
+import { one, all } from './lib/prefs.js';
 import { initScroll, ScrollTrigger } from './lib/scroll.js';
-import { all, one, prefersReducedMotion } from './lib/prefs.js';
+import { renderContent } from './modules/content.js';
 
 const errors = [];
 window.__siteErrors = errors;
@@ -26,7 +23,7 @@ function boot(name, fn) {
     return fn();
   } catch (error) {
     errors.push({ name, error: String(error?.message || error) });
-    console.error(`[site] "${name}" failed to initialise:`, error);
+    console.error(`[site] "${name}" failed:`, error);
     return null;
   }
 }
@@ -36,126 +33,93 @@ async function bootAsync(name, fn) {
     return await fn();
   } catch (error) {
     errors.push({ name, error: String(error?.message || error) });
-    console.error(`[site] "${name}" failed to initialise:`, error);
+    console.error(`[site] "${name}" failed:`, error);
     return null;
   }
 }
 
-/* ── Preloader ───────────────────────────────────────────────── */
+/* ── Loader ──────────────────────────────────────────────────── */
 
 function setupLoader() {
   const loader = one('#loader');
-  if (!loader) return;
+  const bar = one('#loaderBar');
+  if (bar) requestAnimationFrame(() => { bar.style.width = '70%'; });
 
   const remove = () => {
-    loader.classList.add('done');
-    window.setTimeout(() => loader.remove(), 700);
+    if (bar) bar.style.width = '100%';
+    window.setTimeout(() => {
+      loader?.classList.add('done');
+      window.setTimeout(() => loader?.remove(), 700);
+    }, 260);
   };
 
-  if (document.readyState === 'complete') window.setTimeout(remove, 260);
-  else window.addEventListener('load', () => window.setTimeout(remove, 320));
-
-  // Safety net: never leave the visitor staring at a loader.
-  window.setTimeout(remove, 2800);
-}
-
-/* ── Footer year ─────────────────────────────────────────────── */
-
-function setupYear() {
-  const year = one('#year');
-  if (year) year.textContent = String(new Date().getFullYear());
+  if (document.readyState === 'complete') remove();
+  else window.addEventListener('load', remove, { once: true });
+  window.setTimeout(remove, 3200);
 }
 
 /* ── Boot ────────────────────────────────────────────────────── */
 
 async function start() {
   setupLoader();
-  setupYear();
 
-  // Make the console state explicit for anyone inspecting the page.
-  console.info(
-    '%cZhipeng (Louis) Ye %c portfolio',
-    'color:#a855f7;font-weight:600',
-    'color:#8b94ab',
-  );
+  const year = one('#year');
+  if (year) year.textContent = String(new Date().getFullYear());
 
-  // 1. Scroll engine — must exist before anything registers triggers.
-  const scroll = boot('scroll', () => initScroll({ navHeight: 68 }));
+  // 1. Content first — the document and the 3D graph read the same data.
+  boot('content', () => renderContent());
 
-  // 2. Animation modules (static imports: they are cheap and above the fold).
-  const [{ initReveals }, { initScrollFx }] = await Promise.all([
-    import('./modules/reveals.js'),
-    import('./modules/scroll-fx.js'),
-  ]);
+  // 2. Scroll engine, before anything registers a trigger against it.
+  boot('scroll', () => initScroll({ navHeight: 72 }));
 
+  // 3. The scene. Heavy, so it comes in behind a guard.
+  const canvas = one('#scene');
+  const labelLayer = one('#sceneLabels');
+  const { createScene } = await bootAsync('sceneImport', () => import('./scene/index.js')) ?? {};
+  const scene = createScene && canvas ? boot('scene', () => createScene(canvas, { labelLayer })) : null;
+
+  // 4. UI shell talks to the scene in both directions.
+  const { initUI } = await import('./modules/ui.js');
+  const ui = boot('ui', () => initUI({ scene }));
+
+  // 5. Scroll-driven chapters.
+  const { initHeroFlight } = await import('./modules/hero-flight.js');
+  boot('heroFlight', () => initHeroFlight(scene, ui));
+
+  // Reveals are registered after content render so every card is observed.
+  const { initReveals } = await import('./modules/reveals.js');
   boot('reveals', () => initReveals());
-  boot('scrollFx', () => initScrollFx());
 
-  // The FOUC guard can now stand down: reveals are registered and will
-  // resolve. Without this, a slow module load would keep content hidden.
+  // The FOUC guard can stand down: reveals are live and will resolve.
   window.__siteReady = true;
 
-  // 3. Interaction + UI modules.
-  const [
-    { initNav },
-    { initInteractions },
-    { initSkillFilter },
-    { initDiagram },
-  ] = await Promise.all([
-    import('./modules/nav.js'),
+  // 6. Interaction + secondary modules.
+  const [{ initInteractions }, { initCapFilter }, { initDiagram }] = await Promise.all([
     import('./modules/interactions.js'),
-    import('./modules/skills-filter.js'),
+    import('./modules/cap-filter.js'),
     import('./modules/diagram.js'),
   ]);
 
-  const nav = boot('nav', () => initNav());
   boot('interactions', () => initInteractions());
-  boot('skillsFilter', () => initSkillFilter());
+  boot('capFilter', () => initCapFilter());
   boot('diagram', () => initDiagram());
 
-  // 4. Media modules — lazy, and skipped entirely where they'd be waste.
-  const { initHero } = await import('./modules/hero.js');
-  boot('hero', () => initHero(one('#heroCanvas')));
-
-  const { initContactParticles } = await import('./modules/particles.js');
-  boot('contactParticles', () => initContactParticles());
-
-  // Vector assets are loaded only if their slots exist in the DOM.
-  if (one('[data-lottie-slot]') || one('[data-rive-slot]')) {
-    const { initVectorAssets } = await bootAsync('vectorAssetsImport', () =>
-      import('./modules/vector-assets.js'),
-    );
-    if (initVectorAssets) {
-      await bootAsync('vectorAssets', () => initVectorAssets());
-    }
-  }
-
-  // 5. Keep everything honest after layout shifts.
-  const refresh = () => {
-    ScrollTrigger.refresh();
-    nav?.refreshIndicator?.();
-  };
-
+  // 7. Keep measurements honest after fonts and images settle.
   if (document.fonts?.ready) {
-    document.fonts.ready.then(() => window.setTimeout(refresh, 60));
+    document.fonts.ready.then(() => window.setTimeout(() => ScrollTrigger.refresh(), 60));
   }
+  window.addEventListener('load', () => window.setTimeout(() => ScrollTrigger.refresh(), 60));
 
   let resizeTimer = null;
-  window.addEventListener(
-    'resize',
-    () => {
-      window.clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(refresh, 240);
-    },
-    { passive: true },
-  );
+  window.addEventListener('resize', () => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => ScrollTrigger.refresh(), 220);
+  }, { passive: true });
 
-  // Reveal the loader removal only after the first paint of the hero.
-  document.documentElement.dataset.ready = 'true';
+  // The HUD appears only once the scene is actually running.
+  window.setTimeout(() => one('#hud')?.classList.add('ready'), 900);
 
-  if (errors.length) {
-    console.warn(`[site] ${errors.length} subsystem(s) degraded:`, errors);
-  }
+  if (errors.length) console.warn(`[site] ${errors.length} subsystem(s) degraded:`, errors);
 }
 
 if (document.readyState === 'loading') {
@@ -164,10 +128,6 @@ if (document.readyState === 'loading') {
   start();
 }
 
-/**
- * Vite HMR: tear the page down cleanly between edits so ScrollTriggers and
- * animation loops don't stack up during development.
- */
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {
     ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
