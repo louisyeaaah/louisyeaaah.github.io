@@ -89,11 +89,12 @@ async function start() {
   const { initUI } = await import('./modules/ui.js');
   const ui = boot('ui', () => initUI({}));
 
-  // 3b. The second screen: an interactive map of the work.
-  const { initConstellation } = await import('./modules/constellation.js');
-  const map = boot('constellation', () => initConstellation(one('#constellation')));
-  one('#mapScatter')?.addEventListener('click', () => map?.scatter?.());
-  one('#mapReset')?.addEventListener('click', () => map?.reset?.());
+  // 3b. Second screen: pick a capability, read the evidence for it.
+  const { initCapabilityExplorer } = await import('./modules/capability-explorer.js');
+  const explorer = boot('capabilityExplorer', () => initCapabilityExplorer());
+
+  // Clicking a capability card anywhere else selects it here.
+  document.addEventListener('capability:open', (event) => explorer?.open?.(event.detail?.id));
 
   const { initHeroFlight } = await import('./modules/hero-flight.js');
   boot('heroFlight', () => initHeroFlight());

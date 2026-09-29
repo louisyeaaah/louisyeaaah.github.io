@@ -124,15 +124,15 @@
     }
   ],
   "totals": {
-    "allChunksRaw": 1331284,
-    "allChunksGzip": 387514,
-    "allChunksBrotli": 334463
+    "allChunksRaw": 1327032,
+    "allChunksGzip": 385750,
+    "allChunksBrotli": 332828
   },
   "criticalPath": {
     "index": {
-      "gzip": 64856,
-      "brotli": 57618,
-      "raw": 183566,
+      "gzip": 64828,
+      "brotli": 57589,
+      "raw": 183744,
       "files": [
         "main",
         "main",
@@ -143,7 +143,7 @@
       ]
     },
     "lab": {
-      "gzip": 109706,
+      "gzip": 109705,
       "brotli": 98574,
       "raw": 298908,
       "files": [

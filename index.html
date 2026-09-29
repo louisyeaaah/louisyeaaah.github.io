@@ -67,8 +67,8 @@
 <div class="hero-spot" id="heroSpot" aria-hidden="true"></div>
 <div class="hero-plate" aria-hidden="true">
   <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto"
-         poster="/assets/hero-loop-poster.jpg">
-    <source src="/assets/hero-loop.mp4" type="video/mp4">
+         poster="/assets/hero-trace-poster.jpg">
+    <source src="/assets/hero-trace.mp4" type="video/mp4">
   </video>
 </div>
 
@@ -96,7 +96,7 @@
 
 <main id="main">
 
-  <!-- ═══ DARK CHAPTER — the title card and the capability map ═══ -->
+  <!-- ═══ DARK CHAPTER — the title card ═════════════════════════ -->
   <section class="chapter-dark" id="top">
     <div class="hero-track" id="heroTrack">
       <div class="hero-stage" id="heroStage">
@@ -142,30 +142,31 @@
     <!-- ── Second screen: the capability map, then the prose ────
          One section, because "About" is both of these: the map is the
          claim and the prose under it is the evidence.               -->
-    <!-- ── Second screen: the capability map ──────────────────── -->
-    <section class="section constellation" id="map">
-      <div class="constellation-stage">
-        <canvas id="constellation" class="constellation-canvas" tabindex="0"
-                aria-label="Interactive map of roles and capabilities. Drag any node."></canvas>
-
-        <div class="constellation-overlay">
-          <span class="eyebrow">Capability map</span>
-          <h2 class="constellation-title">The shape of the work.</h2>
-          <p class="constellation-hint mono">drag any node &nbsp;·&nbsp; it springs back &nbsp;·&nbsp; click to open</p>
-        </div>
-      <div class="constellation-bar">
-        <span class="map-caption mono" id="mapCaption">Hover or click a node</span>
-        <button type="button" class="map-btn" id="mapScatter">Shuffle the map</button>
-        <button type="button" class="map-btn" id="mapReset">Put it back</button>
-      </div>
-      </div>
-    </section>
 
   <!-- ═══ LIGHT CHAPTER — the document ════════════════════════ -->
   <div class="chapter-light">
 
-      <!-- ── About ────────────────────────────────────────────── -->
+      <!-- ── Second screen: capability, then evidence ──────────── -->
       <section class="section" id="about">
+        <div class="wrap">
+          <header class="section-head reveal">
+            <span class="eyebrow">Capability map</span>
+            <h2 class="section-title">Pick a capability.<br>See the evidence.</h2>
+            <p class="section-note">
+              Each one shows the roles it was used in, and the actual work from
+              those roles — pulled straight from the history on this page.
+            </p>
+          </header>
+
+          <div class="cx reveal" id="capabilityExplorer">
+            <div class="cx-tabs" id="cxTabs" role="tablist" aria-label="Capabilities"></div>
+            <div class="cx-panel" id="cxPanel" role="tabpanel" aria-live="polite" tabindex="0"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── The history in full ────────────────────────────────── -->
+      <section class="section" id="story">
       <div class="wrap">
           <header class="section-head reveal">
             <span class="eyebrow">About</span>

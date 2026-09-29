@@ -150,8 +150,10 @@ em { font-style: italic; }
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
-  opacity: 1;
-  filter: brightness(.82) saturate(1.06) contrast(1.03);
+  /* Dimmed, not hidden: the trace stays readable if you look at it, without
+     competing with the headline. */
+  opacity: .46;
+  filter: contrast(1.02);
   /* scale() supplies the slack the parallax travel needs. */
   transform: translate3d(0, var(--plate-y, 0px), 0) scale(1.16);
   will-change: transform;
@@ -301,85 +303,85 @@ em { font-style: italic; }
 /* GSAP owns these, so they start hidden and are released by the intro. */
 .js .hero-reveal { opacity: 0; }
 
-/* ── Second screen: the capability map ──────────────────────────
-   A full-height interactive panel, and deliberately the first thing after the
-   title card: the page opens with a shot, then hands you something to touch. */
-.section.constellation { padding: 0; position: relative; }
-.section.constellation > .wrap { padding-top: clamp(64px, 9vh, 112px); }
+/* ── Second screen: pick a capability, read the evidence ────────
+   A plain tab interface on purpose. The previous version of this screen was
+   a force-directed graph, which drew a line between a role and a capability
+   and left you to guess what the line meant. A line is a claim with the
+   evidence removed. Here the evidence is the content.                    */
+.cx { border-top: 1px solid var(--rule); }
 
-.constellation-stage {
-  position: relative;
-  height: 100lvh; min-height: 620px;
-  background: transparent;
-  border-top: 1px solid rgba(242,237,228,.10);
+.cx-tabs {
+  display: flex; flex-wrap: wrap; gap: 0;
   border-bottom: 1px solid var(--rule);
-  overflow: hidden;
 }
-/* A scrim, not a panel: the loop stays visible, the map stays readable. */
-.constellation-stage::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 1;
-  pointer-events: none;
-  /* A uniform bed rather than a spotlight: the previous radial left a bright
-     band at the section's top edge, which read as a seam. The second gradient
-     darkens only the very top and bottom so the section blends into the hero
-     above it instead of starting with a line. */
-  background:
-    radial-gradient(ellipse 92% 74% at 50% 46%,
-      rgba(13,12,11,.86) 0%, rgba(13,12,11,.78) 58%, rgba(13,12,11,.66) 100%),
-    linear-gradient(180deg,
-      rgba(13,12,11,.92) 0%, rgba(13,12,11,0) 15%,
-      rgba(13,12,11,0) 85%, rgba(13,12,11,.96) 100%);
+.cx-tab {
+  display: grid; gap: 3px; justify-items: start;
+  padding: 16px 20px 15px;
+  border-right: 1px solid var(--rule-soft);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  text-align: left;
+  transition: background .18s var(--ease-out-quart), border-color .18s;
 }
-.constellation-canvas {
-  position: absolute; inset: 0; z-index: 2;
-  width: 100%; height: 100%; display: block;
-  touch-action: none;
-  cursor: default;
+.cx-tab:hover { background: var(--cream-2); }
+.cx-tab.is-active {
+  background: var(--cream-2);
+  border-bottom-color: var(--clay);
+}
+.cx-tab-label {
+  font-family: var(--sans); font-size: .92rem; font-weight: 500;
+  color: var(--stone); transition: color .18s;
+}
+.cx-tab.is-active .cx-tab-label { color: var(--ink); }
+.cx-tab-count {
+  font-size: .6rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--stone-2);
+}
+.cx-tab.is-active .cx-tab-count { color: var(--clay); }
+
+.cx-panel { padding-top: clamp(28px, 3.4vw, 44px); }
+.cx-panel:focus-visible { outline: 2px solid var(--clay); outline-offset: 6px; }
+
+.cx-detail {
+  font-family: var(--serif);
+  font-size: clamp(1.05rem, 1.5vw, 1.32rem);
+  line-height: 1.5; color: var(--ink);
+  max-width: 62ch;
+}
+.cx-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.cx-tags li {
+  font-size: .64rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--stone); border: 1px solid var(--rule); padding: 4px 10px;
 }
 
-.constellation-bar {
-  position: absolute; z-index: 3;
-  bottom: clamp(104px, 14vh, 164px); left: 0; right: 0;
-  padding: 0 var(--margin);
-  display: flex; flex-wrap: wrap; gap: 10px 18px;
-  align-items: center; justify-content: center;
+.cx-summary {
+  margin: clamp(28px, 3.4vw, 44px) 0 0;
+  padding-top: 16px; border-top: 1px solid var(--rule);
+  font-size: .62rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--stone);
 }
-.map-caption {
-  font-size: .66rem; letter-spacing: .12em; text-transform: uppercase;
-  color: rgba(242,237,228,.62);
-  transition: color .2s var(--ease-out-quart);
-}
-.map-btn {
-  padding: 9px 18px; border-radius: 999px;
-  border: 1px solid rgba(242,237,228,.22);
-  font-family: var(--mono); font-size: .66rem;
-  letter-spacing: .12em; text-transform: uppercase;
-  color: rgba(242,237,228,.78);
-  transition: color .18s var(--ease-out-quart), border-color .18s, background .18s;
-}
-.map-btn:hover {
-  color: var(--hero-cream); border-color: var(--clay);
-  background: rgba(217,119,87,.14);
-}
-.map-btn:active { transform: translateY(1px); }
 
-.constellation-overlay {
-  position: absolute; z-index: 3; top: clamp(28px, 5vh, 56px); left: 0; right: 0;
-  padding: 0 var(--margin);
-  pointer-events: none;
-  display: grid; justify-items: center; text-align: center; gap: 10px;
+.cx-roles { display: grid; gap: 0; margin-top: 8px; }
+.cx-role { padding: 26px 0; border-bottom: 1px solid var(--rule-soft); }
+.cx-role:last-child { border-bottom: 0; }
+.cx-role-head { margin-bottom: 14px; }
+.cx-role-name { font-family: var(--sans); font-size: 1.05rem; font-weight: 500; color: var(--ink); }
+.cx-role-meta { font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; color: var(--stone); margin-top: 5px; }
+
+.cx-points { display: grid; gap: 10px; max-width: 74ch; }
+.cx-points li {
+  position: relative; padding-left: 20px;
+  font-family: var(--serif); font-size: 1rem; line-height: 1.55; color: var(--ink-2);
 }
-.constellation-title {
-  font-family: var(--sans); font-weight: 500;
-  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
-  letter-spacing: -.01em; color: var(--hero-cream);
+.cx-points li::before {
+  content: ''; position: absolute; left: 0; top: .72em;
+  width: 8px; height: 1px; background: var(--clay);
 }
-.constellation-hint {
-  font-size: .62rem; letter-spacing: .16em; text-transform: uppercase;
-  color: var(--faint-night, #6B665F);
+
+@media (max-width: 720px) {
+  .cx-tab { padding: 13px 14px 12px; border-right: 0; border-bottom: 1px solid var(--rule-soft); width: 100%; }
+  .cx-tab.is-active { border-bottom-color: var(--clay); }
 }
-.constellation .eyebrow { color: var(--clay); }
 
 /* ── Light chapter ──────────────────────────────────────────── */
 .chapter-light {
