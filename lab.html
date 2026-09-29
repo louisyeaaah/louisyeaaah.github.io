@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animation lab — Zhipeng (Louis) Ye</title>
+<meta name="description" content="A hands-on evaluation of ten web animation libraries — GSAP, Lenis, Motion, anime.js, three.js, SplitType, Lottie, Rive, tsParticles and AutoAnimate — with real bundle sizes and live demos.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#05060a">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script type="module" src="/src/lab.js"></script>
+</head>
+<body class="lab-body">
+
+<div class="bg" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="bg-aurora a1"></div>
+  <div class="bg-aurora a2"></div>
+  <div class="bg-aurora a3"></div>
+  <div class="bg-noise"></div>
+  <div class="bg-vignette"></div>
+</div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+<header class="nav-wrap stuck" id="navWrap">
+  <nav class="nav" aria-label="Primary">
+    <a class="wordmark" href="/">
+      <span class="wordmark-dot"></span>
+      <span>Zhipeng&nbsp;Ye</span>
+    </a>
+    <div class="nav-links">
+      <a href="/">← Portfolio</a>
+      <a href="#sizes">Sizes</a>
+      <a href="#demos">Demos</a>
+    </div>
+    <div class="nav-actions">
+      <a class="btn btn-ghost btn-sm" href="#verdicts">Verdicts</a>
+    </div>
+  </nav>
+</header>
+
+<main class="lab-main">
+  <div class="shell">
+
+    <section class="lab-hero">
+      <span class="mono eyebrow">Animation lab</span>
+      <h1 class="lab-title">Ten animation libraries, <span class="grad">actually measured</span>.</h1>
+      <p class="lab-lede">
+        Everything below is wired into a real production build of this site — not a
+        sandbox. Each library was installed, integrated, measured in the emitted
+        bundle, and then judged on whether it earned its bytes. Sizes come from the
+        live <code>vite build</code> output: raw, gzip and brotli, per library.
+      </p>
+      <dl class="lab-summary" id="labSummary"></dl>
+    </section>
+
+    <!-- ── Verdict + size table ─────────────────────────────── -->
+    <section class="lab-section" id="sizes">
+      <h2 class="lab-h2" id="verdicts">Verdicts &amp; bundle cost</h2>
+      <p class="lab-sub">
+        “Adopted” means shipped on the main page. “Lab only” means integrated and
+        demonstrated here but deliberately left out of the production critical path.
+      </p>
+      <div class="table-wrap">
+        <table class="lab-table">
+          <thead>
+            <tr>
+              <th scope="col">Library</th>
+              <th scope="col">Verdict</th>
+              <th scope="col" class="num">Raw</th>
+              <th scope="col" class="num">Gzip</th>
+              <th scope="col" class="num">Brotli</th>
+              <th scope="col">What it does here</th>
+            </tr>
+          </thead>
+          <tbody id="sizeTableBody">
+            <tr><td colspan="6" class="lab-loading">Measuring the build…</td></tr>
+          </tbody>
+          <tfoot id="sizeTableFoot"></tfoot>
+        </table>
+      </div>
+      <p class="lab-generated mono mini" id="sizeGenerated"></p>
+    </section>
+
+    <!-- ── Live demos ───────────────────────────────────────── -->
+    <section class="lab-section" id="demos">
+      <h2 class="lab-h2">Live demos</h2>
+      <p class="lab-sub">
+        Scroll-driven demos start when they enter the viewport. Interactive ones are
+        labelled with what to try.
+      </p>
+
+      <div class="lab-grid">
+
+        <!-- ── GSAP ─────────────────────────────────────────── -->
+        <article class="lab-card" id="lab-gsap">
+          <header class="lab-head">
+            <div>
+              <h3>GSAP <span class="lab-ver mono">+ ScrollTrigger</span></h3>
+              <p class="lab-role">Timeline sequencing &amp; scroll scrubbing</p>
+            </div>
+            <span class="verdict verdict-adopted">Adopted · core</span>
+          </header>
+          <div class="lab-stage">
+            <div class="gsap-bars" id="gsapBars">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <footer class="lab-foot">
+            <div class="lab-controls">
+              <button type="button" class="lab-btn" data-gsap="replay">Replay timeline</button>
+              <button type="button" class="lab-btn" data-gsap="reverse">Reverse</button>
+            </div>
+            <p class="lab-note">
+              One timeline drives 12 staggered bars. The main page uses the same API for
+              the hero intro, every heading reveal and the scrubbed experience timeline.
+            </p>
+          </footer>
+        </article>
+
+        <!-- ── Lenis ────────────────────────────────────────── -->
+        <article class="lab-card" id="lab-lenis">
+          <header class="lab-head">
+            <div>
+              <h3>Lenis</h3>
+              <p class="lab-role">Inertial smooth scrolling</p>
+            </div>
+            <span class="verdict verdict-adopted">Adopted · global</span>
+          </header>
+          <div class="lab-stage">
+            <div class="metric-row">
+              <div class="metric"><span class="metric-label mono mini">scroll velocity</span><strong id="lenisVelocity">0.00</strong></div>
+              <div class="metric"><span class="metric-label mono mini">progress</span><strong id="lenisProgress">0%</strong></div>
+            </div>
+            <p class="lab-hint">This whole page is scrolling through Lenis right now — the native scrollbar is bypassed.</p>
+          </div>
+          <footer class="lab-foot">
+            <div class="lab-controls">
+              <button type="button" class="lab-btn" id="lenisDown">Glide down</button>
+              <button type="button" class="lab-btn" id="lenisTop">Glide to top</button>
+            </div>
+            <p class="lab-note">
+              Driven by the GSAP ticker, so both libraries share a single rAF loop and
+              ScrollTrigger stays in sync with the eased position.
+            </p>
+          </footer>
+        </article>
+
+        <!-- ── SplitType ────────────────────────────────────── -->
+        <article class="lab-card" id="lab-split">
+          <header class="lab-head">
+            <div>
+              <h3>SplitType</h3>
+              <p class="lab-role">Text splitting for masked reveals</p>
+            </div>
+            <span class="verdict verdict-adopted">Adopted · headlines</span>
+          </header>
+          <div class="lab-stage">
+            <p class="split-demo" id="splitTarget">Ship the interface, not just the model.</p>
+            <p class="lab-hint mono mini" id="splitCount">—</p>
+          </div>
+          <footer class="lab-foot">
+            <div class="lab-controls">
+              <button type="button" class="lab-btn" data-split="chars">Split chars</button>
+              <button type="button" class="lab-btn" data-split="words">Split words</button>
+              <button type="button" class="lab-btn" data-split="lines">Split lines</button>
+              <button type="button" class="lab-btn" data-split="revert">Revert</button>
+            </div>
+            <p class="lab-note">
+              The wrapper in <code>src/lib/split.js</code> sets <code>aria-label</code> on the
+              container and <code>aria-hidden</code> on every fragment, so screen readers
+              still hear one clean sentence.
+            </p>
+          </footer>
+        </article>
+
+        <!-- ── Motion ───────────────────────────────────────── -->
+        <article class="lab-card" id="lab-motion">
+          <header class="lab-head">
+            <div>
+              <h3>Motion <span class="lab-ver mono">motion.dev</span></h3>
+              <p class="lab-role">Spring physics for UI</p>
+            </div>
+            <span class="verdict verdict-adopted">Adopted · UI layer</span>
+          </header>
+          <div class="lab-stage">
+            <div class="track-row">
+              <span class="track-label mono mini">spring</span>
+              <div class="track"><div class="track-dot" id="motionSpring"></div></div>
+            </div>
+            <div class="track-row">
+              <span class="track-label mono mini">tween</span>
+              <div class="track"><div class="track-dot" id="motionTween"></div></div>
+            </div>
+            <p class="lab-hint">Click a track — the spring overshoots and settles, the tween just stops.</p>
+          </div>
+          <footer class="lab-foot">
+            <div class="lab-controls">
+              <button type="button" class="lab-btn" id="motionRun">Run both</button>
+            </div>
+            <p class="lab-note">
+              Motion owns every short, retargetable interaction: the sliding nav pill,
+              the mobile menu, cursor spotlight, card tilt and magnetic buttons.
+            </p>
+          </footer>
+        </article>
+
+        <!-- ── anime.js ─────────────────────────────────────── -->
+        <article class="lab-card" id="lab-anime">
+          <header class="lab-head">
+            <div>
+              <h3>anime.js <span class="lab-ver mono">v4</span></h3>
+              <p class="lab-role">SVG drawing, motion paths, text scramble</p>
+            </div>
+            <span class="verdict verdict-adopted">Adopted · diagram</span>
+          </header>
+          <div class="lab-stage">
+            <svg class="anime-stage" viewBox="0 0 420 170" role="img" aria-label="Animated SVG demo">
+              <path class="anime-line" id="animeLine" d="M 16 130 C 90 40, 150 150, 220 66 S 350 30, 404 96" />
+              <path class="anime-track" id="animeTrack" d="M 16 150 C 120 150, 300 150, 404 150" />
+              <circle class="anime-dot" id="animeDot" cx="0" cy="0" r="6" />
+              <g class="anime-stagger">
+                <circle cx="60"  cy="40" r="7" />
+                <circle cx="120" cy="40" r="7" />
+                <circle cx="180" cy="40" r="7" />
+                <circle cx="240" cy="40" r="7" />
+                <circle cx="300" cy="40" r="7" />
+                <circle cx="360" cy="40" r="7" />
+              </g>
+            </svg>
+            <p class="lab-hint mono mini" id="animeScramble">svg · stagger · motionpath · scramble</p>
+          </div>
+          <footer class="lab-foot">
+            <div class="lab-controls">
+              <button type="button" class="lab-btn" id="animePlay">Play everything</button>
+            </div>
+            <p class="lab-note">
+              <code>svg.createDrawable</code> animates the curve, <code>createMotionPath</code>
+              sends the dot along it, <code>stagger</code> pops the row, and
+              <code>scrambleText</code> decodes the caption. Same combination drives the
+              architecture diagram on the main page.
+            </p>
+          </footer>
+        </article>
+
+        <!-- ── three.js ─────────────────────────────────────── -->
+        <article class="lab-card" id="lab-three">
+          <header class="lab-head">
+            <div>
+              <h3>three.js</h3>
+              <p class="lab-role">WebGL shader + 3D geometry</p>
+            </div>
+            <span class="verdict verdict-heavy">Adopted · heaviest</span>
+          </header>
+          <div class="lab-stage">
+            <canvas class="three-stage" id="threeStage" aria-label="Rotating wireframe icosahedron"></canvas>
+            <div class="metric-row metric-row--tight">
+              <div class="metric"><span class="metric-label mono mini">fps</span><strong id="threeFps">—</strong></div>
+              <div class="metric"><span class="metric-label mono mini">draw calls</span><strong id="threeCalls">—</strong></div>
+              <div class="metric"><span class="metric-label mono mini">renderer</span><strong id="threeRenderer">—</strong></div>
+            </div>
+          </div>
+          <footer class="lab-foot">
+            <p class="lab-note">
+              The largest dependency by a wide margin. It powers the hero only — a
+              full-bleed GLSL aurora plus a 3D point constellation, suspended when
+              off-screen or when the tab is hidden. A site that cannot justify that
+              weight should keep the 2D canvas fallback that ships beside it.
+            </p>
+          </footer>
+        </article>
+
+        <!-- ── tsParticles ──────────────────────────────────── -->
+        <article class="lab-card" id="lab-tsparticles">
+          <header class="lab-head">
+            <div>
+              <h3>tsParticles <span class="lab-ver mono">slim</span></h3>
+              <p class="lab-role">Declarative interactive particles</p>
+            </div>
+            <span class="verdict verdict-scoped">Adopted · contact only</span>
+          </header>
+          <div class="lab-stage">
+            <div class="tsparticles-stage" id="tsparticlesStage"></div>
+            <p class="lab-hint">Move the pointer through it, or click to push particles out.</p>
+          </div>
+          <footer class="lab-foot">
+            <div class="lab-controls">
+              <button type="button" class="lab-btn is-active" data-tsparticles="grab">Pointer links</button>
+              <button type="button" class="lab-btn" data-tsparticles="burst">Click-only</button>
+              <button type="button" class="lab-btn" data-tsparticles="dense">Dense field</button>
+            </div>
+            <p class="lab-note">
+              Right tool for the contact card, wrong tool for the hero — a declarative
+              config replaces ~150 lines of bespoke canvas work, but it cannot match a
+              purpose-built shader. The engine is <em>composed by hand</em> from
+              <code>@tsparticles/basic</code> plus three interactions rather than using the
+              convenient <code>slim</code> preset, which halves the payload by dropping
+              emoji/star/polygon shapes and nine interactions this site never uses.
+            </p>
+          </footer>
+        </article>
+
+        <!-- ── Lottie ───────────────────────────────────────── -->
+        <article class="lab-card" id="lab-lottie">
+          <header class="lab-head">
+            <div>
+              <h3>Lottie <span class="lab-ver mono">lottie-web</span></h3>
+              <p class="lab-role">Vector animation from JSON</p>
+            </div>
+            <span class="verdict verdict-scoped">Adopted · hero badge</span>
+          </header>
+          <div class="lab-stage lab-stage--split">
+            <figure class="vector-figure">
+              <div class="vector-slot" data-lottie-slot="/assets/agent-core.json" hidden></div>
+              <figcaption class="mono mini">agent-core.json — authored for this site (2.0s loop)</figcaption>
+            </figure>
+            <figure class="vector-figure">
+              <div class="vector-slot" data-lottie-slot="/assets/lottie/echarts-chart.json" hidden></div>
+              <figcaption class="mono mini">echarts chart.json — Apache-2.0, third-party</figcaption>
+            </figure>
+          </div>
+          <footer class="lab-foot">
+            <div class="lab-controls">
+              <button type="button" class="lab-btn" id="lottieToggle">Pause</button>
+              <button type="button" class="lab-btn" id="lottieSlow">Speed 0.5×</button>
+              <button type="button" class="lab-btn" id="lottieFast">Speed 2×</button>
+            </div>
+            <p class="lab-note">
+              The site's own asset is generated programmatically, so it carries no
+              licensing questions. The second player proves the runtime handles
+              third-party artwork too.
+            </p>
+          </footer>
+        </article>
+
+        <!-- ── Rive ─────────────────────────────────────────── -->
+        <article class="lab-card" id="lab-rive">
+          <header class="lab-head">
+            <div>
+              <h3>Rive <span class="lab-ver mono">@rive-app/canvas</span></h3>
+              <p class="lab-role">State-machine driven vector animation</p>
+            </div>
+            <span class="verdict verdict-lab">Lab only · asset gate</span>
+          </header>
+          <div class="lab-stage lab-stage--split">
+            <figure class="vector-figure">
+              <div class="vector-slot" data-rive-slot="/assets/rive/rating.riv" data-rive-name="star rating" hidden></div>
+              <figcaption class="mono mini">rating.riv — MIT, from rive-app/rive-react</figcaption>
+            </figure>
+            <div class="lab-status" id="riveStatus">Loading runtime…</div>
+          </div>
+          <footer class="lab-foot">
+            <p class="lab-note">
+              <strong>Verdict: technically excellent, blocked on the asset pipeline.</strong>
+              The runtime is MIT, has no attribution requirement, and its player is far
+              smaller than Lottie's. But <code>.riv</code> is a compiled binary that can
+              only be produced by the Rive editor, and <em>exporting</em> one needs a paid
+              plan (Cadet, ~$9/seat/mo). You can play any <code>.riv</code> for free — which
+              is exactly what this demo does with the MIT-licensed sample. It is absent
+              from the main page because a star-rating widget says nothing about AI
+              engineering.
+            </p>
+          </footer>
+        </article>
+
+        <!-- ── AutoAnimate ──────────────────────────────────── -->
+        <article class="lab-card" id="lab-autoanimate">
+          <header class="lab-head">
+            <div>
+              <h3>AutoAnimate</h3>
+              <p class="lab-role">Automatic FLIP layout transitions</p>
+            </div>
+            <span class="verdict verdict-scoped">Adopted · skills filter</span>
+          </header>
+          <div class="lab-stage">
+            <ul class="aa-list" id="aaList"></ul>
+          </div>
+          <footer class="lab-foot">
+            <div class="lab-controls">
+              <button type="button" class="lab-btn" id="aaAdd">Add item</button>
+              <button type="button" class="lab-btn" id="aaRemove">Remove</button>
+              <button type="button" class="lab-btn" id="aaShuffle">Shuffle</button>
+            </div>
+            <p class="lab-note">
+              Zero configuration beyond attaching it to the parent — it diffs child
+              positions and interpolates the reflow. On the main page it animates the
+              capability grid whenever a filter chip changes what is rendered.
+            </p>
+          </footer>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="lab-section">
+      <h2 class="lab-h2">How the stack was split</h2>
+      <div class="lab-columns">
+        <div class="lab-col">
+          <h3>GSAP owns <em>when</em></h3>
+          <p>
+            Anything with a timeline, a scroll position or a stagger. The hero intro,
+            heading reveals, counters, the scrubbed experience timeline, the
+            velocity-reactive marquee and background parallax are all one GSAP
+            + ScrollTrigger layer, driven off the Lenis scroll position.
+          </p>
+        </div>
+        <div class="lab-col">
+          <h3>Motion owns <em>how it feels</em></h3>
+          <p>
+            Short, retargetable interactions where physics beats choreography: the
+            sliding nav pill, the mobile menu, the cursor spotlight, card tilt and
+            magnetic buttons. Re-implementing spring settling on top of GSAP would
+            have been busywork.
+          </p>
+        </div>
+        <div class="lab-col">
+          <h3>anime.js owns <em>SVG</em></h3>
+          <p>
+            Path drawing, motion paths and text scrambling are built in rather than
+            plugin add-ons, so the architecture diagram is one file instead of a
+            plugin inventory.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="shell footer-inner">
+    <p class="mono mini">© <span id="year">2025</span> Zhipeng (Louis) Ye</p>
+    <p class="mono mini">
+      Third-party asset licences: <a class="to-top" href="/third-party/README.md">third-party/</a>
+    </p>
+    <a class="to-top mono mini" href="/">← Back to the portfolio</a>
+  </div>
+</footer>
+
+</body>
+</html>

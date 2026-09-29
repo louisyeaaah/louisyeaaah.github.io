@@ -9,9 +9,30 @@
 <meta name="theme-color" content="#05060a">
 <link rel="canonical" href="https://louisyeaaah.github.io/">
 
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://louisyeaaah.github.io/">
+<meta property="og:title" content="Zhipeng (Louis) Ye — AI Engineer">
+<meta property="og:description" content="Building agentic AI that holds up in production — multi-agent systems, MCP tooling and LLM platforms on AWS.">
+<meta property="og:image" content="https://louisyeaaah.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Zhipeng (Louis) Ye — AI Engineer">
+<meta name="twitter:description" content="Building agentic AI that holds up in production — multi-agent systems, MCP tooling and LLM platforms on AWS.">
+<meta name="twitter:image" content="https://louisyeaaah.github.io/assets/og.png">
+
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <script>
-  /* Progressive enhancement: only hide reveal elements once JS is confirmed live,
-     so the page stays fully readable if scripts fail to load. */
+  /* Progressive enhancement guard, applied before first paint:
+     hide `.reveal` elements so nothing flashes before the animation
+     libraries boot — then un-hide everything if they never arrive. */
   (function () {
     var d = document.documentElement;
     d.classList.add('js');
@@ -20,25 +41,6 @@
     }, 3000);
   })();
 </script>
-
-<!-- Open Graph -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://louisyeaaah.github.io/">
-<meta property="og:title" content="Zhipeng (Louis) Ye — AI Engineer">
-<meta property="og:description" content="Building agentic AI that holds up in production — multi-agent systems, MCP tooling and LLM platforms on AWS.">
-<meta property="og:image" content="https://louisyeaaah.github.io/assets/og.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Zhipeng (Louis) Ye — AI Engineer">
-<meta name="twitter:description" content="Building agentic AI that holds up in production — multi-agent systems, MCP tooling and LLM platforms on AWS.">
-<meta name="twitter:image" content="https://louisyeaaah.github.io/assets/og.png">
-
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="assets/favicon.svg">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
 
 <script type="application/ld+json">
 {
@@ -56,6 +58,8 @@
   "knowsAbout": ["AI Agents", "Multi-Agent Systems", "Model Context Protocol", "LangGraph", "AWS", "Kubernetes", "LLM Observability", "Python"]
 }
 </script>
+
+<script type="module" src="/src/main.js"></script>
 </head>
 <body>
 
@@ -89,6 +93,7 @@
       <span>Zhipeng&nbsp;Ye</span>
     </a>
     <div class="nav-links" id="navLinks">
+      <span class="nav-indicator" aria-hidden="true"></span>
       <a href="#about">About</a>
       <a href="#skills">Skills</a>
       <a href="#experience">Experience</a>
@@ -170,6 +175,10 @@
 
       <aside class="hero-card reveal" data-reveal data-delay="200" aria-label="Profile snapshot">
         <div class="card-shine" aria-hidden="true"></div>
+
+        <!-- Lottie "agent core" — authored for this site (see vector-assets.js) -->
+        <div class="vector-slot vector-slot--badge" data-lottie-slot="/assets/agent-core.json" hidden></div>
+
         <div class="hero-card-head">
           <span class="mono mini">// currently</span>
           <span class="chip chip-live"><span class="pulse"></span>2025 — now</span>
@@ -264,6 +273,108 @@
           </article>
         </div>
       </div>
+
+      <!-- ── Agent architecture diagram (animated with anime.js) ── -->
+      <div class="diagram-band">
+        <div class="diagram-card reveal" data-reveal>
+          <div class="diagram-head">
+            <h3 class="diagram-title">How the pieces fit together</h3>
+            <span class="diagram-scramble mono">agentic platform · end to end</span>
+          </div>
+
+          <svg class="diagram" viewBox="0 0 1000 340" role="img"
+               aria-label="Architecture diagram: an agent orchestrator discovers tools through an MCP tool layer that invokes Grafana, Jira and internal services. The orchestrator calls Amazon Bedrock for inference, emits traces to observability and evaluation tooling, and is served on AWS EKS and RDS.">
+            <defs>
+              <linearGradient id="diagramEdge" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stop-color="#38bdf8"/>
+                <stop offset="55%"  stop-color="#a855f7"/>
+                <stop offset="100%" stop-color="#f472b6"/>
+              </linearGradient>
+              <marker id="diagramArrow" viewBox="0 0 10 10" refX="9" refY="5"
+                      markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(160,175,210,.75)"/>
+              </marker>
+            </defs>
+
+            <!-- edges -->
+            <g class="diagram-edges" fill="none">
+              <path class="diagram-edge" id="edge-a-c" d="M 274 79 C 312 79 337 79 375 79"
+                    marker-end="url(#diagramArrow)"/>
+              <path class="diagram-edge" id="edge-c-d" d="M 625 79 C 663 79 688 79 726 79"
+                    marker-end="url(#diagramArrow)"/>
+              <path class="diagram-edge" id="edge-a-e" d="M 100 118 L 100 214"
+                    marker-end="url(#diagramArrow)"/>
+              <path class="diagram-edge" id="edge-a-b" d="M 198 118 C 198 175 375 165 375 214"
+                    marker-end="url(#diagramArrow)"/>
+              <path class="diagram-edge" id="edge-b-f" d="M 625 261 C 663 261 688 261 726 261"
+                    marker-end="url(#diagramArrow)"/>
+            </g>
+
+            <!-- edge captions -->
+            <g class="diagram-captions">
+              <text class="diagram-caption" x="324" y="64"  text-anchor="middle">discovers</text>
+              <text class="diagram-caption" x="675" y="64"  text-anchor="middle">invokes</text>
+              <text class="diagram-caption" x="112" y="172" text-anchor="start">traces</text>
+              <text class="diagram-caption" x="292" y="176" text-anchor="middle">inference</text>
+              <text class="diagram-caption" x="675" y="246" text-anchor="middle">served on</text>
+            </g>
+
+            <!-- nodes -->
+            <g class="diagram-nodes">
+              <g class="diagram-node" data-tone="blue">
+                <rect x="24" y="40" width="250" height="78" rx="16"/>
+                <circle class="node-dot" cx="52" cy="79" r="5"/>
+                <text class="node-title" x="72" y="74">Agent Orchestrator</text>
+                <text class="node-sub"   x="72" y="96">LangGraph · multi-agent</text>
+              </g>
+
+              <g class="diagram-node" data-tone="violet">
+                <rect x="375" y="40" width="250" height="78" rx="16"/>
+                <circle class="node-dot" cx="403" cy="79" r="5"/>
+                <text class="node-title" x="423" y="74">MCP Tool Layer</text>
+                <text class="node-sub"   x="423" y="96">dynamic tool discovery</text>
+              </g>
+
+              <g class="diagram-node" data-tone="pink">
+                <rect x="726" y="40" width="250" height="78" rx="16"/>
+                <circle class="node-dot" cx="754" cy="79" r="5"/>
+                <text class="node-title" x="774" y="74">Grafana · Jira · Internal</text>
+                <text class="node-sub"   x="774" y="96">downstream services</text>
+              </g>
+
+              <g class="diagram-node" data-tone="violet">
+                <rect x="24" y="222" width="250" height="78" rx="16"/>
+                <circle class="node-dot" cx="52" cy="261" r="5"/>
+                <text class="node-title" x="72" y="256">Observability &amp; Eval</text>
+                <text class="node-sub"   x="72" y="278">LangSmith · Grafana</text>
+              </g>
+
+              <g class="diagram-node" data-tone="blue">
+                <rect x="375" y="222" width="250" height="78" rx="16"/>
+                <circle class="node-dot" cx="403" cy="261" r="5"/>
+                <text class="node-title" x="423" y="256">Amazon Bedrock</text>
+                <text class="node-sub"   x="423" y="278">LLM inference</text>
+              </g>
+
+              <g class="diagram-node" data-tone="pink">
+                <rect x="726" y="222" width="250" height="78" rx="16"/>
+                <circle class="node-dot" cx="754" cy="261" r="5"/>
+                <text class="node-title" x="774" y="256">AWS EKS · RDS</text>
+                <text class="node-sub"   x="774" y="278">runtime &amp; data layers</text>
+              </g>
+            </g>
+
+            <!-- travelling traffic dots, positioned by anime.js createMotionPath -->
+            <g class="diagram-pulses">
+              <circle class="diagram-pulse" cx="0" cy="0" r="3.6"/>
+              <circle class="diagram-pulse" cx="0" cy="0" r="3.6"/>
+              <circle class="diagram-pulse" cx="0" cy="0" r="3.6"/>
+              <circle class="diagram-pulse" cx="0" cy="0" r="3.6"/>
+              <circle class="diagram-pulse" cx="0" cy="0" r="3.6"/>
+            </g>
+          </svg>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -275,8 +386,18 @@
         <h2 class="section-title">The stack I <span class="grad">build with</span>.</h2>
       </header>
 
+      <!-- Filtering drives AutoAnimate's FLIP reflow of the grid below -->
+      <div class="filter-bar" role="group" aria-label="Filter capabilities by area">
+        <button type="button" class="filter-chip is-active" data-filter="all"      data-label="all areas" aria-pressed="true">All <span class="filter-count">6</span></button>
+        <button type="button" class="filter-chip" data-filter="agents"   data-label="agents"    aria-pressed="false">Agents <span class="filter-count">2</span></button>
+        <button type="button" class="filter-chip" data-filter="platform" data-label="platform"  aria-pressed="false">Platform <span class="filter-count">3</span></button>
+        <button type="button" class="filter-chip" data-filter="cloud"    data-label="cloud"     aria-pressed="false">Cloud <span class="filter-count">1</span></button>
+        <button type="button" class="filter-chip" data-filter="product"  data-label="full-stack" aria-pressed="false">Full-stack <span class="filter-count">1</span></button>
+      </div>
+      <p class="filter-status" id="filterStatus" role="status" aria-live="polite">6 capabilities shown</p>
+
       <div class="skill-grid">
-        <article class="skill-card reveal" data-reveal data-tilt>
+        <article class="skill-card reveal" data-reveal data-cat="agents" data-tilt>
           <div class="skill-glow"></div>
           <span class="skill-num mono">01</span>
           <h3>AI Agents &amp; Multi-Agent Systems</h3>
@@ -284,7 +405,7 @@
           <ul class="tags"><li>LangChain</li><li>LangGraph</li><li>LangSmith</li><li>Pydantic AI</li></ul>
         </article>
 
-        <article class="skill-card reveal" data-reveal data-delay="70" data-tilt>
+        <article class="skill-card reveal" data-reveal data-delay="70" data-cat="agents platform" data-tilt>
           <div class="skill-glow"></div>
           <span class="skill-num mono">02</span>
           <h3>MCP — Model Context Protocol</h3>
@@ -292,7 +413,7 @@
           <ul class="tags"><li>MCP servers</li><li>Grafana</li><li>Playwright</li><li>Tool discovery</li></ul>
         </article>
 
-        <article class="skill-card reveal" data-reveal data-delay="140" data-tilt>
+        <article class="skill-card reveal" data-reveal data-delay="140" data-cat="cloud" data-tilt>
           <div class="skill-glow"></div>
           <span class="skill-num mono">03</span>
           <h3>Cloud &amp; Container Infrastructure</h3>
@@ -300,7 +421,7 @@
           <ul class="tags"><li>AWS EKS</li><li>RDS</li><li>Bedrock</li><li>Kubernetes</li></ul>
         </article>
 
-        <article class="skill-card reveal" data-reveal data-delay="210" data-tilt>
+        <article class="skill-card reveal" data-reveal data-delay="210" data-cat="product" data-tilt>
           <div class="skill-glow"></div>
           <span class="skill-num mono">04</span>
           <h3>Full-Stack Development</h3>
@@ -308,7 +429,7 @@
           <ul class="tags"><li>Python</li><li>FastAPI</li><li>RESTful APIs</li><li>Next.js</li></ul>
         </article>
 
-        <article class="skill-card reveal" data-reveal data-delay="280" data-tilt>
+        <article class="skill-card reveal" data-reveal data-delay="280" data-cat="platform" data-tilt>
           <div class="skill-glow"></div>
           <span class="skill-num mono">05</span>
           <h3>AI Observability &amp; Platform Engineering</h3>
@@ -316,7 +437,7 @@
           <ul class="tags"><li>Grafana</li><li>Telemetry</li><li>Evaluation</li><li>Incident tooling</li></ul>
         </article>
 
-        <article class="skill-card reveal" data-reveal data-delay="350" data-tilt>
+        <article class="skill-card reveal" data-reveal data-delay="350" data-cat="platform" data-tilt>
           <div class="skill-glow"></div>
           <span class="skill-num mono">06</span>
           <h3>CI/CD &amp; Developer Platforms</h3>
@@ -336,6 +457,8 @@
       </header>
 
       <ol class="timeline">
+        <span class="timeline-line" aria-hidden="true"></span>
+
         <li class="tl-item reveal" data-reveal>
           <span class="tl-node" aria-hidden="true"></span>
           <div class="tl-card">
@@ -484,6 +607,9 @@
     <div class="shell">
       <div class="contact-card reveal" data-reveal>
         <div class="contact-glow" aria-hidden="true"></div>
+        <!-- tsParticles interactive network mounts here -->
+        <div class="contact-particles" id="contactParticles" aria-hidden="true"></div>
+
         <span class="mono eyebrow">05 — Contact</span>
         <h2 class="contact-title">Let's build something that <span class="grad">survives production</span>.</h2>
         <p class="contact-sub">
@@ -510,11 +636,12 @@
 <footer class="footer">
   <div class="shell footer-inner">
     <p class="mono mini">© <span id="year">2025</span> Zhipeng (Louis) Ye</p>
-    <p class="mono mini">Built from scratch · Deployed on GitHub Pages</p>
+    <p class="mono mini">
+      <a class="to-top" href="/lab.html">Animation lab →</a>
+    </p>
     <a class="to-top mono mini" href="#top">Back to top ↑</a>
   </div>
 </footer>
 
-<script src="main.js" defer></script>
 </body>
 </html>
