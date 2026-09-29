@@ -72,7 +72,6 @@ export const ROLES = [
     points: [
       'Built enterprise AI agent infrastructure for observability, evaluation and monitoring of production AI applications.',
       'Deployed agent services on AWS EKS with RDS data layers and Amazon Bedrock LLM access.',
-      'Led the internal AI Builders Catalogue, supporting 14+ production plugins.',
       'Built reusable CI/CD workflows adopted across 20+ repositories.',
       'Built the Bastion security-assessment POC — nominated for two awards among 300+ submissions.',
     ],
