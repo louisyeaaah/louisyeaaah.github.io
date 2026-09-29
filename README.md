@@ -10,13 +10,16 @@ Personal portfolio site for **Zhipeng (Louis) Ye** — AI Engineer, Sydney.
 
 Two chapters and a hard cut between them:
 
-1. **A dark WebGL chapter.** An agent-graph constellation — eleven nodes wired by
-   the résumé's own data — that the camera flies through as you scroll. You can
-   drag to orbit, hover a node to light it up, click one to open it, or press
-   `⌘K` and search. A pinned 240vh scroll-scrub, rendered with three.js and a
-   bloom + grain + chromatic-aberration chain.
+1. **A dark WebGL chapter, shot like a title sequence.** An agent-graph
+   constellation — eleven nodes wired by the résumé's own data — that the camera
+   flies through as you scroll. The film language is in the lens, not the
+   geometry: depth of field that rack-focuses onto whichever node the camera is
+   passing, anamorphic halation bleeding out of the highlights, motion smear
+   that rises with camera speed, gate weave, and a wide-to-normal lens settle
+   under the opening credits.
 2. **A long light chapter.** Warm ivory, serif body copy, no decoration. The
-   résumé, as a document.
+   résumé, as a document — plus **live telemetry panels** for five side
+   projects (simulated in the browser, and labelled as such).
 
 The point of the split is that the 3D earns attention once, at the top, and then
 gets out of the way. A portfolio's job is to be read.
@@ -119,6 +122,7 @@ Lottie, Rive and tsParticles off first paint.
 | **Filter chips** | Filters the capability grid with an AutoAnimate FLIP reflow (arrow-key navigable, live region announcing results) |
 | **Click a card or timeline row** | Opens the same node the 3D graph would |
 | **"View in 3D"** | Scrolls the camera back to that node |
+| **Side project panels** | Switch projects, change the chart window (1H/1D/1W), pause the feed, hover the chart for a crosshair read-out |
 
 ---
 
@@ -134,7 +138,9 @@ Lottie, Rive and tsParticles off first paint.
 ├── src/
 │   ├── main.js                # orchestrator; per-module error isolation
 │   ├── styles.css             # the design system
-│   ├── data/graph.js          # ONE source of truth: 3D nodes + document body
+│   ├── data/
+│   │   ├── graph.js           # ONE source of truth: 3D nodes + document body
+│   │   └── projects.js        # side-project panel definitions
 │   ├── scene/
 │   │   ├── index.js           # renderer, curve-driven camera rig, picking, labels
 │   │   ├── graph.js           # instanced nodes, edge shader, dust shader, grid
@@ -143,6 +149,7 @@ Lottie, Rive and tsParticles off first paint.
 │   ├── lib/
 │   │   ├── prefs.js           # motion prefs, capability detection
 │   │   ├── scroll.js          # Lenis + ScrollTrigger wiring
+│   │   ├── live-chart.js      # hand-rolled canvas chart (4 modes)
 │   │   └── particles-engine.js
 │   └── modules/
 │       ├── content.js         # renders the document FROM data/graph.js
@@ -164,6 +171,10 @@ Lottie, Rive and tsParticles off first paint.
 - Additive blending ignores `scene.fog` entirely (fog is a shader chunk, not a
   pass), so the dust field fades on depth explicitly.
 - All dust motion is in the vertex shader: zero per-frame buffer uploads.
+- The chart engine is hand-rolled rather than pulling in `lightweight-charts`
+  (~45 KB gzip, and opinionated about its own theme) for four render modes.
+- Side-project panels are entirely client-side simulation. One rAF loop drives
+  whichever panel is active and stops the moment the section scrolls away.
 
 ### Resilience and accessibility
 

@@ -131,41 +131,90 @@ export function createScene(canvas, { labelLayer } = {}) {
     parallaxY: 0,
     targetParallaxX: 0,
     targetParallaxY: 0,
+    smear: 0,
+    focus: 26,
+    // Opening shot: a 2.8s lens settle, run once on load.
+    intro: 0,
   };
 
   const up = new Vector3(0, 1, 0);
   const lookTarget = new Vector3();
 
   // Ease progress so scroll jitter never becomes camera jitter.
-  function updateCamera(dt) {
-    rig.eased += (rig.progress - rig.eased) * Math.min(dt * 3.4, 1);
+  const prevPosition = new Vector3();
+  const sideVec = new Vector3();
+  const rightVec = new Vector3(1, 0, 0);
+
+  function updateCamera(dt, time) {
+    // Frame-rate independent damping: identical at 60, 120 and 144 Hz.
+    rig.eased += (rig.progress - rig.eased) * (1 - Math.exp(-dt * 3.4));
     const t = clamp(rig.eased, 0, 1);
 
     const point = curve.getPointAt(t);
     const tangent = curve.getTangentAt(t).normalize();
 
-    rig.orbitYaw += (rig.targetOrbitYaw - rig.orbitYaw) * Math.min(dt * 5, 1);
-    rig.orbitPitch += (rig.targetOrbitPitch - rig.orbitPitch) * Math.min(dt * 5, 1);
-    rig.parallaxX += (rig.targetParallaxX - rig.parallaxX) * Math.min(dt * 2.6, 1);
-    rig.parallaxY += (rig.targetParallaxY - rig.parallaxY) * Math.min(dt * 2.6, 1);
+    rig.orbitYaw += (rig.targetOrbitYaw - rig.orbitYaw) * (1 - Math.exp(-dt * 5));
+    rig.orbitPitch += (rig.targetOrbitPitch - rig.orbitPitch) * (1 - Math.exp(-dt * 5));
+    rig.parallaxX += (rig.targetParallaxX - rig.parallaxX) * (1 - Math.exp(-dt * 2.6));
+    rig.parallaxY += (rig.targetParallaxY - rig.parallaxY) * (1 - Math.exp(-dt * 2.6));
 
     // Look direction = forward along the path, rotated by the drag offset.
     const dir = tangent.clone()
       .applyAxisAngle(up, rig.orbitYaw)
-      .applyAxisAngle(new Vector3(1, 0, 0), rig.orbitPitch)
+      .applyAxisAngle(rightVec, rig.orbitPitch)
       .normalize();
 
-    // Slight lateral offset from the pointer so the world feels alive.
-    const side = new Vector3().crossVectors(tangent, up).normalize();
+    sideVec.crossVectors(tangent, up).normalize();
+
+    // Handheld: no real camera is ever perfectly still. Two slow sine pairs at
+    // incommensurate frequencies read as a human operator, not a machine.
+    const hx = Math.sin(time * 0.63) * 0.62 + Math.sin(time * 1.27) * 0.24;
+    const hy = Math.cos(time * 0.51) * 0.54 + Math.sin(time * 1.11) * 0.20;
+    const hRoll = Math.sin(time * 0.44) * 0.0042;
+
+    // Opening shot. `intro` eases 0 -> 1 once, driving a wide-to-normal lens
+    // settle and a short push in, so the first frame reads as a camera
+    // arriving rather than a scene that was simply already there.
+    if (rig.intro < 1) {
+      rig.intro = Math.min(rig.intro + dt / 2.8, 1);
+      const e = 1 - Math.pow(1 - rig.intro, 3);
+      const fov = 78 - 20 * e;
+      if (Math.abs(camera.fov - fov) > 0.01) {
+        camera.fov = fov;
+        camera.updateProjectionMatrix();
+      }
+    }
+    const push = (1 - (1 - Math.pow(1 - rig.intro, 3))) * -9;
+
     camera.position.copy(point)
-      .addScaledVector(side, rig.parallaxX * 2.6)
-      .addScaledVector(up, rig.parallaxY * 1.8);
+      .addScaledVector(tangent, push)
+      .addScaledVector(sideVec, rig.parallaxX * 2.6 + hx * 0.42)
+      .addScaledVector(up, rig.parallaxY * 1.8 + hy * 0.34);
 
     lookTarget.copy(camera.position).addScaledVector(dir, 26);
     camera.lookAt(lookTarget);
 
-    // Bank into the curve — the detail that makes it feel like a flight.
-    camera.rotateZ(-tangent.x * 0.22 + rig.orbitYaw * 0.18);
+    // Bank into the curve, then add the handheld roll on top.
+    camera.rotateZ(-tangent.x * 0.22 + rig.orbitYaw * 0.18 + hRoll);
+
+    /* ── lens behaviour, driven from actual camera motion ───────── */
+
+    const speed = dt > 0 ? camera.position.distanceTo(prevPosition) / dt : 0;
+    prevPosition.copy(camera.position);
+
+    // Motion smear only while the camera is genuinely moving.
+    rig.smear += (clamp(speed / 110, 0, 1) * 0.7 - rig.smear) * (1 - Math.exp(-dt * 4));
+    post.setSmear(rig.smear);
+
+    // Rack focus: pull focus toward whatever node is nearest, but slowly, so
+    // it feels like a focus puller chasing the subject rather than a snap.
+    let nearest = 70;
+    for (const feature of graph.features) {
+      const d = camera.position.distanceTo(feature.position);
+      if (d < nearest) nearest = d;
+    }
+    rig.focus += (nearest - rig.focus) * (1 - Math.exp(-dt * 1.5));
+    post.setFocus(rig.focus);
   }
 
   /* ── labels ────────────────────────────────────────────────── */
@@ -337,7 +386,7 @@ export function createScene(canvas, { labelLayer } = {}) {
     last = now;
     elapsed += dt;
 
-    updateCamera(dt);
+    updateCamera(dt, elapsed);
     graph.update(dt, camera);
     post.update(dt);
 
@@ -405,7 +454,10 @@ export function createScene(canvas, { labelLayer } = {}) {
   if (prefersReducedMotion) {
     rig.progress = 0.04;
     rig.eased = 0.04;
-    updateCamera(1);
+    rig.intro = 1;
+    camera.fov = 58;
+    camera.updateProjectionMatrix();
+    updateCamera(1, 0);
     graph.update(0.016, camera);
     updateLabels();
     renderer.render(scene, camera);
@@ -424,7 +476,7 @@ export function createScene(canvas, { labelLayer } = {}) {
       rig.progress = clamp(value, 0, 1);
       if (prefersReducedMotion) {
         rig.eased = rig.progress;
-        updateCamera(1);
+        updateCamera(1, 0);
         updateLabels();
         renderer.render(scene, camera);
       }

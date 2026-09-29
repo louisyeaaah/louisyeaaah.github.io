@@ -46,9 +46,9 @@
       "role": "The dark hero chapter: an agent-graph constellation the camera flies through as you scroll, with boom bloom, film grain and chromatic aberration.",
       "verdict": "adopted",
       "why": "The single biggest visual and byte cost, and the reason the page has a hero at all. Costs 138 KB gzip — more than every other library combined — so it is a dynamic import, paused when off-screen or hidden, and degrades to a static frame under reduced motion. Justified only because the hero IS the first impression.",
-      "raw": 574255,
-      "gzip": 141780,
-      "brotli": 115861
+      "raw": 583442,
+      "gzip": 143247,
+      "brotli": 116997
     },
     {
       "id": "motion",
@@ -124,15 +124,15 @@
     }
   ],
   "totals": {
-    "allChunksRaw": 1379351,
-    "allChunksGzip": 400972,
-    "allChunksBrotli": 345332
+    "allChunksRaw": 1414734,
+    "allChunksGzip": 411505,
+    "allChunksBrotli": 354536
   },
   "criticalPath": {
     "index": {
-      "gzip": 63903,
-      "brotli": 56847,
-      "raw": 180121,
+      "gzip": 65484,
+      "brotli": 58234,
+      "raw": 187811,
       "files": [
         "main",
         "main",
@@ -143,9 +143,9 @@
       ]
     },
     "lab": {
-      "gzip": 109814,
-      "brotli": 98648,
-      "raw": 299078,
+      "gzip": 109943,
+      "brotli": 98761,
+      "raw": 299377,
       "files": [
         "lab",
         "lab",

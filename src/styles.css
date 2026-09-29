@@ -156,83 +156,134 @@ em { font-style: italic; }
 .scene-label:hover { border-color: var(--clay); color: #fff; }
 .scene-label-dot { width: 4px; height: 4px; background: var(--clay); flex: none; }
 
-/* ── Dark chapter (hero) ────────────────────────────────────── */
-/* Transparent on purpose: the fixed canvas is the background. If WebGL is
-   unavailable the <html> ground colour shows through and the cream type is
-   still perfectly readable. */
+/* ── Dark chapter: the title sequence ───────────────────────────
+   Structured like a film title card — letterboxed, centred, credits
+   below the title — because the brief here is immersion, not a hero
+   section with a headline in the corner.                               */
 .chapter-dark {
   position: relative; z-index: 1;
   background: transparent;
   color: var(--hero-cream);
 }
 
-/* The scroll track. Sticky stage inside = pinned scroll-scrub. */
-.hero-track { height: 240vh; }
+.hero-track { height: 260vh; }
+
 .hero-stage {
   position: sticky; top: 0;
-  height: 100lvh; min-height: 620px;
+  height: 100lvh; min-height: 640px;
   overflow: hidden;
-  display: flex; align-items: center;
+  display: grid; place-items: center;
+  padding: 0 var(--margin);
 }
 
-/* Scrim between the canvas and the type: near-solid on the left where the
-   copy lives, clear on the right so the 3D actually reads. Without this the
-   graph sits directly under the headline and neither survives. */
+/* Letterbox. Crops the frame toward ~1.85:1 and closes in on load. */
+.hero-bars { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
+.hero-bar {
+  position: absolute; left: 0; right: 0;
+  height: clamp(38px, 7.5vh, 96px);
+  background: var(--night);
+  display: block;
+  will-change: transform;
+}
+.hero-bar--top { top: 0; transform-origin: top center; }
+.hero-bar--bottom { bottom: 0; transform-origin: bottom center; }
+
+/* Scrim between the canvas and the type. Centred, because the title is. */
 .hero-stage::before {
   content: '';
   position: absolute; inset: 0;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
   background:
-    linear-gradient(100deg,
-      rgba(13,12,11,.94) 0%,
-      rgba(13,12,11,.82) 28%,
-      rgba(13,12,11,.34) 56%,
-      rgba(13,12,11,0) 82%),
-    linear-gradient(180deg, rgba(13,12,11,.85) 0%, rgba(13,12,11,0) 14%,
-                            rgba(13,12,11,0) 78%, rgba(13,12,11,.9) 100%);
+    radial-gradient(ellipse 62% 54% at 50% 52%,
+      rgba(13,12,11,.74) 0%,
+      rgba(13,12,11,.46) 44%,
+      rgba(13,12,11,.08) 74%,
+      rgba(13,12,11,0) 90%),
+    linear-gradient(180deg, rgba(13,12,11,.92) 0%, rgba(13,12,11,0) 20%,
+                            rgba(13,12,11,0) 74%, rgba(13,12,11,.94) 100%);
 }
 
-.hero-inner { position: relative; z-index: 1; width: 100%; }
+.hero-inner {
+  position: relative; z-index: 3;
+  width: 100%; max-width: 1180px; margin-inline: auto;
+  display: grid; justify-items: center; text-align: center;
+}
 
-.hero-eyebrow {
-  display: block;
-  font-family: var(--mono); font-size: .75rem;
-  letter-spacing: .12em; text-transform: uppercase;
+.hero-kicker {
+  text-shadow: 0 1px 16px rgba(13,12,11,.85);
+  display: inline-flex; align-items: center; gap: 11px;
+  font-family: var(--mono); font-size: .72rem;
+  letter-spacing: .24em; text-transform: uppercase;
   color: var(--hero-dim);
-  margin-bottom: 28px;
+  margin-bottom: clamp(20px, 3.4vh, 38px);
 }
-.hero-name {
-  font-family: var(--sans); font-size: 1rem; font-weight: 500;
-  color: var(--hero-cream); margin-bottom: 40px;
-}
+.hero-kicker-dot { width: 5px; height: 5px; background: var(--clay); border-radius: 50%; flex: none; }
 
-/* Hero scale follows Anthropic's launch hero: clamp(34px, 6.6vw, 112px),
-   line-height 1.05, letter-spacing -.012em, weight 400. */
+/* The title is the shot. Big, centred, tight — no tracking to start with,
+   settling inward as it resolves. */
 .hero-title {
   font-family: var(--sans);
   font-weight: 400;
-  font-size: clamp(2.1rem, 6.6vw, 7rem);
-  line-height: 1.05;
+  font-size: clamp(1.95rem, 5.6vw, 6.2rem);
+  line-height: 1.0;
   letter-spacing: -.012em;
-  max-width: 17ch;
-  margin-bottom: 40px;
+  margin: 0 0 clamp(20px, 3.4vh, 36px);
   text-wrap: balance;
-}
-.hero-title em { font-style: normal; color: var(--clay); }
-
-.hero-sub {
-  max-width: 46ch;
-  font-size: clamp(1rem, 1.15vw, 1.2rem);
-  line-height: 1.5;
-  color: var(--hero-dim);
-  margin-bottom: 36px;
+  /* Functional, not decorative: the backdrop is a moving render. */
+  text-shadow: 0 2px 34px rgba(13,12,11,.72), 0 1px 6px rgba(13,12,11,.5);
 }
 
-.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+/* A hairline that draws outward from centre, the way a title card rules off. */
+.hero-rule {
+  width: min(560px, 62vw); height: 1px;
+  background: rgba(242,237,228,.14);
+  margin-bottom: clamp(20px, 3.2vh, 36px);
+  overflow: hidden;
+}
+.hero-rule i {
+  display: block; height: 100%; width: 100%;
+  background: var(--clay);
+  transform: scaleX(0); transform-origin: center;
+}
 
-/* Everything in the hero is driven by scroll, so it starts hidden and is
-   revealed by GSAP. `.js` guard means it is never hidden without scripts. */
+/* Credit block: the four facts, set like end credits. */
+.hero-credits {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: clamp(20px, 3.4vw, 56px);
+  margin-bottom: clamp(24px, 3.8vh, 44px);
+}
+.hero-credits > div { text-align: left; }
+.hero-credits dt {
+  font-family: var(--mono); font-size: .62rem;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--faint-night, #6B665F);
+  margin-bottom: 7px;
+}
+.hero-credits dd {
+  font-family: var(--sans); font-size: .95rem; color: var(--hero-cream);
+  text-shadow: 0 1px 16px rgba(13,12,11,.8);
+}
+
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+
+.hero-scrollcue {
+  position: absolute; left: 50%; bottom: clamp(52px, 9vh, 104px);
+  transform: translateX(-50%);
+  z-index: 3;
+  display: grid; justify-items: center; gap: 10px;
+  pointer-events: none;
+}
+.hero-scrollcue span {
+  font-size: .58rem; letter-spacing: .28em; text-transform: uppercase;
+  color: var(--faint-night, #6B665F);
+}
+.hero-scrollcue i {
+  display: block; width: 1px; height: 46px;
+  background: linear-gradient(180deg, rgba(242,237,228,.5), rgba(242,237,228,0));
+}
+
+/* GSAP owns these, so they start hidden and are released by the intro. */
 .js .hero-reveal { opacity: 0; }
 
 /* ── Light chapter ──────────────────────────────────────────── */
@@ -488,6 +539,98 @@ em { font-style: italic; }
   font-family: var(--mono); font-size: .68rem; color: var(--stone);
 }
 
+/* ── Side projects: live telemetry dashboard ────────────────── */
+.proj-shell {
+  display: grid; grid-template-columns: minmax(0, 296px) minmax(0, 1fr);
+  border: 1px solid var(--rule);
+}
+.proj-rail { border-right: 1px solid var(--rule); display: grid; align-content: start; }
+
+.proj-item {
+  display: grid; gap: 5px; width: 100%; text-align: left;
+  padding: 18px 22px; border-bottom: 1px solid var(--rule-soft);
+  transition: background .18s var(--ease-out-quart);
+}
+.proj-item:last-child { border-bottom: 0; }
+.proj-item:hover { background: var(--cream-2); }
+.proj-item.is-active { background: var(--cream-2); box-shadow: inset 2px 0 0 var(--clay); }
+.proj-name { font-family: var(--sans); font-size: .98rem; font-weight: 500; color: var(--ink); }
+.proj-tagline { font-size: .82rem; color: var(--stone); line-height: 1.42; }
+.proj-status { font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--clay); margin-top: 3px; }
+
+.proj-panel { padding: 24px 26px 22px; display: grid; gap: 20px; align-content: start; }
+.proj-head { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+.proj-title { font-size: 1.25rem; font-weight: 500; }
+.proj-sub { font-size: .88rem; color: var(--stone); margin-top: 5px; max-width: 44ch; }
+.proj-head-meta { display: flex; gap: 8px; align-items: center; flex: none; }
+.proj-live {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: #3F7C70;
+}
+.proj-live i {
+  width: 6px; height: 6px; border-radius: 50%; background: #5F9E8B;
+  animation: ping 2.2s var(--ease) infinite;
+}
+.proj-sim {
+  font-size: .6rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--stone); border: 1px solid var(--rule); padding: 4px 8px;
+}
+.proj-panel.is-paused .proj-live { color: var(--stone); }
+.proj-panel.is-paused .proj-live i { animation: none; background: var(--stone); }
+
+.proj-kpis {
+  display: grid; grid-template-columns: repeat(4, minmax(0,1fr));
+  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+}
+.proj-kpi { padding: 14px 16px 14px 0; }
+.proj-kpi + .proj-kpi { padding-left: 16px; border-left: 1px solid var(--rule-soft); }
+.proj-kpi dt { font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; color: var(--stone); margin-bottom: 8px; }
+.proj-kpi dd { font-size: 1.24rem; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+
+.proj-chart-wrap { border: 1px solid var(--rule-soft); }
+.proj-chart-head {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 11px 14px; border-bottom: 1px solid var(--rule-soft);
+}
+.proj-chart-head > .mono { font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--stone); }
+.proj-range { display: flex; gap: 2px; }
+.proj-range-btn {
+  padding: 4px 10px; border: 1px solid transparent;
+  font-family: var(--mono); font-size: .62rem; color: var(--stone);
+  transition: color .15s var(--ease-out-quart), border-color .15s;
+}
+.proj-range-btn:hover { color: var(--ink); }
+.proj-range-btn.is-active { color: var(--ink); border-color: var(--rule); }
+.proj-chart { display: block; width: 100%; height: 232px; cursor: crosshair; }
+
+.proj-log { border-top: 1px solid var(--rule); padding-top: 14px; }
+.proj-log-head {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: .6rem; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--stone); margin-bottom: 10px;
+}
+.proj-pause {
+  font-size: .6rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--stone); border: 1px solid var(--rule); padding: 4px 10px;
+  transition: color .15s var(--ease-out-quart), border-color .15s;
+}
+.proj-pause:hover { color: var(--ink); border-color: var(--ink); }
+.proj-log-list { display: grid; }
+.proj-log-item {
+  display: flex; gap: 14px; padding: 8px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  font-size: .85rem; line-height: 1.45;
+}
+.proj-log-item:last-child { border-bottom: 0; }
+.proj-log-time { font-size: .68rem; color: var(--stone-2); flex: none; padding-top: 2px; }
+.proj-log-text { color: var(--ink-2); }
+
+.proj-foot { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid var(--rule); }
+.proj-foot span {
+  font-size: .62rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--stone); border: 1px solid var(--rule); padding: 4px 9px;
+}
+
 /* ── Education ──────────────────────────────────────────────── */
 .edu-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0; border-top: 1px solid var(--rule); }
 .edu-card {
@@ -714,6 +857,11 @@ em { font-style: italic; }
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 1100px) {
   .cols { grid-template-columns: 1fr; gap: 48px; }
+  .proj-shell { grid-template-columns: 1fr; }
+  .proj-rail { border-right: 0; border-bottom: 1px solid var(--rule); grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .proj-item { border-right: 1px solid var(--rule-soft); }
+  .proj-kpis { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .proj-kpi:nth-child(odd) { padding-left: 0; border-left: 0; }
   .cap-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .cap-card:nth-child(3n) { border-right: 1px solid var(--rule); }
   .cap-card:nth-child(2n) { border-right: 0; }
@@ -734,6 +882,9 @@ em { font-style: italic; }
 
 @media (max-width: 720px) {
   .hero-track { height: 200vh; }
+  .proj-rail { grid-template-columns: 1fr; }
+  .proj-panel { padding: 20px 18px 18px; }
+  .proj-chart { height: 190px; }
   .cap-grid, .edu-grid { grid-template-columns: 1fr; }
   .cap-card, .edu-card { border-right: 0 !important; padding-left: 0 !important; }
   .hud { gap: 16px; padding-bottom: 14px; }

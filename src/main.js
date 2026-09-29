@@ -94,13 +94,15 @@ async function start() {
   window.__siteReady = true;
 
   // 6. Interaction + secondary modules.
-  const [{ initInteractions }, { initCapFilter }] = await Promise.all([
+  const [{ initInteractions }, { initCapFilter }, { initSideProjects }] = await Promise.all([
     import('./modules/interactions.js'),
     import('./modules/cap-filter.js'),
+    import('./modules/side-projects.js'),
   ]);
 
   boot('interactions', () => initInteractions());
   boot('capFilter', () => initCapFilter());
+  boot('sideProjects', () => initSideProjects());
 
   // 7. Keep measurements honest after fonts and images settle.
   if (document.fonts?.ready) {

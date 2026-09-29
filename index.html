@@ -78,6 +78,7 @@
       <a href="#about">About</a>
       <a href="#experience">Experience</a>
       <a href="#capabilities">Capabilities</a>
+      <a href="#projects">Projects</a>
       <a href="#contact">Contact</a>
     </div>
     <button type="button" class="nav-cmd" id="paletteOpen">
@@ -92,20 +93,43 @@
   <!-- ═══ DARK CHAPTER — the 3D agent graph ═══════════════════ -->
   <section class="chapter-dark" id="top">
     <div class="hero-track" id="heroTrack">
-      <div class="hero-stage">
+      <div class="hero-stage" id="heroStage">
+        <!-- Letterbox: crops the frame toward ~1.85:1 and closes in on load. -->
+        <div class="hero-bars" aria-hidden="true">
+          <i class="hero-bar hero-bar--top"></i>
+          <i class="hero-bar hero-bar--bottom"></i>
+        </div>
+
         <div class="wrap hero-inner">
-          <span class="hero-eyebrow hero-reveal">AI Engineer · Sydney, Australia</span>
-          <h1 class="hero-title hero-reveal">
-            Building agentic AI that holds up in production.
-          </h1>
-          <p class="hero-sub hero-reveal">
-            I design and ship agent infrastructure, MCP-based tool integrations and
-            LLM platforms at enterprise scale — and the telemetry that proves they work.
+          <p class="hero-kicker hero-reveal">
+            <span class="hero-kicker-dot" aria-hidden="true"></span>
+            Zhipeng&nbsp;(Louis)&nbsp;Ye
           </p>
+
+          <h1 class="hero-title hero-reveal">
+            Building agentic AI<br>
+            that holds up<br>
+            in production.
+          </h1>
+
+          <div class="hero-rule hero-reveal" aria-hidden="true"><i></i></div>
+
+          <dl class="hero-credits hero-reveal">
+            <div><dt>role</dt><dd>AI Engineer</dd></div>
+            <div><dt>studio</dt><dd>Macquarie Group</dd></div>
+            <div><dt>location</dt><dd>Sydney, Australia</dd></div>
+            <div><dt>focus</dt><dd>Agents · MCP · Observability</dd></div>
+          </dl>
+
           <div class="hero-cta hero-reveal">
             <a class="btn btn-clay" href="#experience">See the work</a>
             <a class="btn btn-line-light" href="mailto:zhipengye927@gmail.com">Get in touch</a>
           </div>
+        </div>
+
+        <div class="hero-scrollcue hero-reveal" aria-hidden="true">
+          <span class="mono">scroll</span>
+          <i></i>
         </div>
       </div>
     </div>
@@ -212,6 +236,25 @@
         </div>
         <p class="sr-only" id="filterStatus" role="status" aria-live="polite"></p>
         <div class="cap-grid" id="capGrid"></div>
+      </div>
+    </section>
+
+    <!-- ── Side projects: live telemetry ────────────────────── -->
+    <section class="section" id="projects">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <span class="eyebrow">Side projects</span>
+          <h2 class="section-title">Things I build when nobody's asking.</h2>
+          <p class="section-note">
+            Live telemetry panels. The data is simulated in your browser — these
+            are product demos, not connected systems.
+          </p>
+        </header>
+
+        <div class="proj-shell reveal">
+          <nav class="proj-rail" id="projectList" aria-label="Side projects"></nav>
+          <div class="proj-panel" id="projectPanel"></div>
+        </div>
       </div>
     </section>
 
