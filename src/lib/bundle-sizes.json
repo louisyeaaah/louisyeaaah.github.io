@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-09-29",
-  "note": "Sizes are filled in by tools/report-sizes.mjs from a real production build (raw / gzip / brotli).",
+  "note": "Sizes are measured by tools/report-sizes.mjs from a real `vite build` (raw / gzip / brotli), attributed per library chunk. criticalPath is what a first visit actually downloads.",
   "libraries": [
     {
       "id": "gsap",
@@ -76,24 +76,24 @@
     },
     {
       "id": "tsparticles",
-      "name": "tsParticles (slim)",
+      "name": "tsParticles (hand-composed)",
       "version": "4.4.0",
       "chunk": "vendor-tsparticles",
       "role": "The interactive particle network behind the contact card: pointer linking, click-to-push, automatic blur/off-screen pausing.",
       "verdict": "adopted-scoped",
-      "why": "Wrong tool for the hero (the shader does that far better and cheaper), right tool here — a declarative config replaced what would have been ~150 lines of hand-written canvas. Lazily imported only when the contact section approaches.",
+      "why": "Right tool for the contact card, wrong tool for the hero — a declarative config replaced ~150 lines of bespoke canvas. The convenience preset is not used: the engine is composed from @tsparticles/basic plus three interactions, which drops emoji/image/line/polygon/square/star shapes and nine interactions this site never touches, cutting it from 45.0 to 30.8 KB gzip. Composing by hand means loading @tsparticles/plugin-interactivity yourself — loadBasic does not, and without it every interaction silently no-ops.",
       "raw": 104752,
       "gzip": 31567,
       "brotli": 27719
     },
     {
       "id": "lottie",
-      "name": "Lottie (lottie-web)",
+      "name": "Lottie (lottie_light)",
       "version": "5.13.0",
       "chunk": "vendor-lottie",
       "role": "The animated 'agent core' badge in the hero profile card.",
       "verdict": "adopted-with-caveat",
-      "why": "The runtime is solid and the 16 KB asset is authored programmatically for this site, so licensing is clean. The caveat is the asset pipeline: hand-authoring Lottie JSON is only realistic for simple shapes — anything designer-grade needs After Effects + Bodymovin.",
+      "why": "The `lottie_light` build is imported rather than the full player, because the only thing that separates them is the expression engine — which this site never uses and which is the sole reason the full build needs `eval`. That took it from 77.6 to 45.8 KB gzip and removed the eval warning. The 16 KB asset is generated programmatically for this site, so licensing is clean; hand-authoring is only realistic for simple shapes, and anything designer-grade needs After Effects + Bodymovin.",
       "raw": 169126,
       "gzip": 46936,
       "brotli": 40837
@@ -103,9 +103,9 @@
       "name": "Rive (@rive-app/canvas)",
       "version": "2.43.1",
       "chunk": "vendor-rive",
-      "role": "Wired up and demoed in the lab; not shipped on the main page.",
+      "role": "Wired up and demoed on the lab page with an MIT-licensed .riv; not shipped on the main page.",
       "verdict": "blocked-on-asset",
-      "why": "The runtime is genuinely the best of the group for interactive, state-machine-driven vector work and its player is far smaller than Lottie's. The blocker is not the code — `.riv` files can only be produced with the Rive editor, and Rive's public CDN samples carry no redistribution licence. `RIVE_SRC` in src/modules/vector-assets.js is the single switch that enables it.",
+      "why": "The runtime is MIT, needs no attribution, and its player beats Lottie's. The blocker is the ASSET, not the code: `.riv` is a compiled binary that only the Rive editor can produce, and *exporting* one requires a paid plan (Cadet, ~$9/seat/mo). You can play any `.riv` for free, which is what the lab does with the MIT-licensed rating.riv from rive-app/rive-react. It is absent from the main page because a star-rating widget says nothing about AI engineering — not because it is unusable.",
       "raw": 192130,
       "gzip": 53627,
       "brotli": 46926
@@ -124,9 +124,9 @@
     }
   ],
   "totals": {
-    "allChunksRaw": 1333326,
-    "allChunksGzip": 387256,
-    "allChunksBrotli": 334438
+    "allChunksRaw": 1334072,
+    "allChunksGzip": 387561,
+    "allChunksBrotli": 334716
   },
   "criticalPath": {
     "index": {
@@ -143,9 +143,9 @@
       ]
     },
     "lab": {
-      "gzip": 115306,
-      "brotli": 103517,
-      "raw": 323927,
+      "gzip": 115611,
+      "brotli": 103797,
+      "raw": 324673,
       "files": [
         "lab",
         "rolldown",
