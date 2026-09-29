@@ -605,6 +605,147 @@ em { font-style: italic; }
   color: var(--stone); border: 1px solid var(--rule); padding: 4px 9px;
 }
 
+/* ── Phone simulators (Dop, tap-ios) ────────────────────────────
+   A real frame, not a screenshot: everything inside is live DOM, so it can
+   be tapped, typed on and read by assistive tech.                        */
+.phone-stage {
+  display: grid; grid-template-columns: minmax(0, 330px) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 60px); align-items: start;
+}
+
+.phone {
+  width: 100%; max-width: 320px;
+  aspect-ratio: 9 / 19.2;
+  padding: 11px;
+  border-radius: 48px;
+  background: linear-gradient(160deg, #2A2927, #17161A 40%, #232220);
+  box-shadow:
+    0 40px 80px -40px rgba(20,20,19,.55),
+    0 2px 0 0 rgba(255,255,255,.10) inset,
+    0 0 0 1px rgba(20,20,19,.55);
+  position: relative;
+}
+.phone-shell { position: relative; height: 100%; border-radius: 38px; overflow: hidden; }
+.phone-island {
+  position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
+  width: 84px; height: 23px; border-radius: 999px;
+  background: #08080A; z-index: 6;
+}
+
+.phone-screen {
+  height: 100%; display: flex; flex-direction: column;
+  background: #0D0C0B; color: #F2EDE4;
+  font-family: var(--sans);
+}
+.phone[data-theme="light"] .phone-screen { background: #FAF9F5; color: #141413; }
+
+.ios-status {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 15px 26px 4px;
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .02em;
+  opacity: .92; flex: none;
+}
+.ios-status-right { display: inline-flex; align-items: center; gap: 5px; }
+.ios-bars, .ios-wifi, .ios-batt { display: block; background: currentColor; opacity: .8; }
+.ios-bars { width: 15px; height: 9px; clip-path: polygon(0 70%,22% 70%,22% 100%,0 100%,0 70%,28% 45%,50% 45%,50% 100%,28% 100%,28% 45%,56% 20%,78% 20%,78% 100%,56% 100%,56% 20%,84% 0,100% 0,100% 100%,84% 100%); }
+.ios-wifi { width: 13px; height: 9px; clip-path: polygon(0 35%,50% 0,100% 35%,82% 48%,50% 26%,18% 48%,0 35%,18% 62%,50% 44%,82% 62%,82% 62%,32% 76%,68% 76%,50% 92%); }
+.ios-batt { width: 20px; height: 10px; border-radius: 3px; opacity: .55; }
+
+/* — Dop: storyboard editor — */
+.app { flex: 1; display: flex; flex-direction: column; min-height: 0; padding: 4px 18px 18px; }
+.app-nav { padding: 6px 0 10px; }
+.app-nav-title { font-size: .95rem; font-weight: 500; }
+.app-meta { font-size: .62rem; opacity: .5; margin-bottom: 14px; }
+
+.app-beats { flex: 1; display: grid; align-content: start; gap: 0; overflow: hidden; }
+.app-beat {
+  display: grid; grid-template-columns: 1fr auto auto; gap: 10px;
+  align-items: center; padding: 9px 0;
+  border-bottom: 1px solid rgba(242,237,228,.09);
+  transition: opacity .3s var(--ease-out-quart);
+}
+.phone[data-theme="light"] .app-beat { border-bottom-color: rgba(20,20,19,.09); }
+.app-beat.is-dim { opacity: .28; }
+.app-beat.is-added { border-bottom-color: var(--clay); }
+.app-beat-main { display: grid; gap: 2px; min-width: 0; }
+.app-beat-name { font-size: .78rem; line-height: 1.25; }
+.app-beat-tone { font-family: var(--mono); font-size: .56rem; letter-spacing: .1em; text-transform: uppercase; opacity: .45; }
+.app-beat-num, .app-beat-len { font-family: var(--mono); font-size: .66rem; opacity: .6; }
+
+.app-hint {
+  font-family: var(--mono); font-size: .58rem; line-height: 1.5;
+  opacity: .45; margin: 12px 0 10px; min-height: 2.6em;
+}
+.app-cta {
+  width: 100%; padding: 12px;
+  border-radius: 999px; background: var(--clay); color: #fff;
+  font-family: var(--sans); font-size: .82rem; font-weight: 500;
+  transition: background .2s, opacity .2s;
+}
+.app-cta:hover { background: var(--clay-deep); }
+.app-cta.is-busy {
+  background: transparent; color: var(--clay);
+  box-shadow: inset 0 0 0 1px rgba(217,119,87,.5);
+}
+
+/* — tap: the keyboard you can type on — */
+.app--tap { padding: 4px 0 0; }
+.app--tap .app-nav { padding: 6px 18px 10px; }
+.tap-compose { flex: 1; padding: 0 18px; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding-bottom: 14px; }
+.tap-text { font-size: 1rem; line-height: 1.45; word-break: break-word; }
+.tap-caret {
+  display: inline-block; width: 2px; height: 1.05em; margin-left: 2px;
+  background: var(--phone-tint, #6A9BCC); vertical-align: text-bottom;
+  animation: caret-blink 1.05s steps(2, start) infinite;
+}
+@keyframes caret-blink { 50% { opacity: 0; } }
+
+.tap-chip {
+  display: inline-flex; align-items: center; gap: 7px; align-self: flex-start;
+  padding: 6px 11px; border-radius: 999px;
+  background: rgba(242,237,228,.06);
+  font-family: var(--mono); font-size: .58rem; letter-spacing: .04em;
+  opacity: .5; transition: opacity .3s, background .3s, color .3s;
+}
+.phone[data-theme="light"] .tap-chip { background: rgba(20,20,19,.05); }
+.tap-chip-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex: none; }
+.tap-chip.is-hot { opacity: 1; background: rgba(106,155,204,.16); color: #4E7DA8; }
+
+.tap-kb { flex: none; padding: 8px 6px 14px; background: rgba(242,237,228,.05); display: grid; gap: 6px; }
+.phone[data-theme="light"] .tap-kb { background: rgba(20,20,19,.055); }
+.kb-row { display: flex; justify-content: center; gap: 4px; }
+.kb-key {
+  flex: 0 0 8.4%; aspect-ratio: 1 / 1.4;
+  display: grid; place-items: center;
+  border-radius: 5px;
+  background: rgba(242,237,228,.10);
+  font-family: var(--sans); font-size: .72rem; color: inherit;
+  transition: background .12s;
+}
+.phone[data-theme="light"] .kb-key { background: #fff; box-shadow: 0 1px 0 rgba(20,20,19,.18); }
+.kb-key:hover { background: rgba(242,237,228,.22); }
+.kb-key--wide { flex: 0 0 38%; aspect-ratio: 1 / 0.28; font-size: .62rem; letter-spacing: .08em; }
+
+/* — the notes beside the frame — */
+.phone-notes { padding-top: 8px; }
+.phone-notes-title { font-size: 1.05rem; font-weight: 500; margin-bottom: 12px; }
+.phone-notes p { font-size: .95rem; line-height: 1.55; color: var(--ink-2); max-width: 46ch; }
+.phone-notes-list { display: grid; gap: 8px; margin: 16px 0; }
+.phone-notes-list li {
+  position: relative; padding-left: 16px;
+  font-size: .875rem; line-height: 1.5; color: var(--ink-2);
+}
+.phone-notes-list li::before {
+  content: ''; position: absolute; left: 0; top: .62em;
+  width: 6px; height: 1px; background: var(--clay);
+}
+.phone-notes-hint { font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: var(--clay); }
+
+@media (max-width: 900px) {
+  .phone-stage { grid-template-columns: 1fr; justify-items: center; }
+  .phone-notes { text-align: left; }
+}
+
 /* ── Education ──────────────────────────────────────────────── */
 .edu-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0; border-top: 1px solid var(--rule); }
 .edu-card {
