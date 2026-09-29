@@ -65,22 +65,22 @@ Ten libraries were installed, integrated, measured and judged. Sizes are **gzip,
 per library**, from the emitted production chunks — `npm run size` regenerates
 the table from a real build (see [`src/lib/bundle-sizes.json`](src/lib/bundle-sizes.json)).
 
-**Shipped on the main page (5):**
+**Shipped on the main page (4):**
 
 | Library | Gzip | Role |
 |---|---:|---|
 | three.js | 138.5 KB | The dark chapter: graph, shader floor, bloom/grain/aberration chain |
 | GSAP + ScrollTrigger | 42.8 KB | The pinned hero flight and the scrubbed copy exit |
-| anime.js v4 | 16.0 KB | The agent-architecture diagram: path draw, motion path, scramble |
 | Lenis | 5.2 KB | Inertial smooth scrolling, on the GSAP ticker |
 | AutoAnimate | 3.0 KB | FLIP reflow of the capability grid when filtered |
 
-**Cut to the lab (5) — and that is the result, not an omission:**
+**Cut to the lab (6) — and that is the result, not an omission:**
 
 | Library | Why it is not on the main page |
 |---|---|
 | SplitType | Anthropic's hero resolves with a 26 px blur-in, not a per-word split. I built both; the blur-in won. |
 | Motion | The reference language is cubic-bezier transitions and `opacity: .85` hovers. Springs were the wrong physics. |
+| anime.js | It was carrying the agent-architecture diagram, which has since been cut from the portfolio. |
 | tsParticles | The WebGL chapter owns particles now; running both is two systems doing one job. |
 | Lottie | The bespoke asset lived in the hero card the 3D chapter replaced. |
 | Rive | `.riv` can only be authored in the Rive editor, and exporting needs a paid plan. |
@@ -149,8 +149,7 @@ Lottie, Rive and tsParticles off first paint.
 │       ├── ui.js              # panel, command palette, HUD, nav state
 │       ├── hero-flight.js     # scroll → camera progress + blur-in entrance
 │       ├── reveals.js         # IntersectionObserver + CSS transitions
-│       ├── cap-filter.js      # AutoAnimate
-│       └── diagram.js         # anime.js
+│       └── cap-filter.js      # AutoAnimate
 └── tools/report-sizes.mjs     # measures a real build
 ```
 

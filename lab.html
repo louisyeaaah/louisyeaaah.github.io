@@ -231,8 +231,9 @@
             <p class="lab-note">
               <code>svg.createDrawable</code> animates the curve, <code>createMotionPath</code>
               sends the dot along it, <code>stagger</code> pops the row, and
-              <code>scrambleText</code> decodes the caption. Same combination drives the
-              architecture diagram on the main page.
+              <code>scrambleText</code> decodes the caption. This card is the only
+              remaining use of anime.js — the diagram it drove was cut from the
+              portfolio.
             </p>
           </footer>
         </article>
@@ -392,27 +393,27 @@
         <div class="lab-col">
           <h3>GSAP owns <em>when</em></h3>
           <p>
-            Anything with a timeline, a scroll position or a stagger. The hero intro,
-            heading reveals, counters, the scrubbed experience timeline, the
-            velocity-reactive marquee and background parallax are all one GSAP
-            + ScrollTrigger layer, driven off the Lenis scroll position.
+            Anything with a timeline or a scroll position: the pinned hero flight and
+            the scrubbed exit of the hero copy. One ScrollTrigger, plus the
+            <code>refresh()</code> bookkeeping that keeps its measurements honest
+            after fonts and resizes land.
           </p>
         </div>
         <div class="lab-col">
-          <h3>Motion owns <em>how it feels</em></h3>
+          <h3>Lenis owns <em>feel</em></h3>
           <p>
-            Short, retargetable interactions where physics beats choreography: the
-            sliding nav pill, the mobile menu, the cursor spotlight, card tilt and
-            magnetic buttons. Re-implementing spring settling on top of GSAP would
-            have been busywork.
+            Inertial scrolling, driven off the GSAP ticker so the two share a single
+            rAF loop. The flight camera reads better against interpolated scroll than
+            against raw wheel deltas.
           </p>
         </div>
         <div class="lab-col">
-          <h3>anime.js owns <em>SVG</em></h3>
+          <h3>three.js owns <em>the frame</em></h3>
           <p>
-            Path drawing, motion paths and text scrambling are built in rather than
-            plugin add-ons, so the architecture diagram is one file instead of a
-            plugin inventory.
+            The dark chapter: node graph, shader floor, dust field and the
+            bloom &rarr; tone map &rarr; grade chain. Scroll drives a scroll-scrubbed
+            position along a curve; dragging adds a look offset in a separate
+            accumulator, so the two inputs cannot fight.
           </p>
         </div>
       </div>

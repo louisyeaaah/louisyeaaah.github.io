@@ -488,37 +488,6 @@ em { font-style: italic; }
   font-family: var(--mono); font-size: .68rem; color: var(--stone);
 }
 
-/* ── Architecture diagram ───────────────────────────────────── */
-.diagram-card {
-  max-width: var(--media-col);
-  border: 1px solid var(--rule);
-  padding: 32px clamp(20px, 3vw, 40px) 26px;
-  background: var(--cream-2);
-}
-.diagram-head {
-  display: flex; flex-wrap: wrap; gap: 10px 20px;
-  align-items: baseline; justify-content: space-between; margin-bottom: 24px;
-}
-.diagram-title { font-family: var(--sans); font-size: 1.1rem; font-weight: 500; }
-.diagram-scramble {
-  font-family: var(--mono); font-size: .68rem;
-  letter-spacing: .12em; text-transform: uppercase; color: var(--clay);
-}
-.diagram { display: block; width: 100%; height: auto; overflow: visible; }
-
-.diagram-node { transform-box: fill-box; transform-origin: center; }
-.diagram-node rect { fill: rgba(20,20,19,.03); stroke: rgba(20,20,19,.16); stroke-width: 1; }
-.diagram-node .node-dot { fill: var(--sage); }
-.diagram-node[data-tone="accent"] .node-dot { fill: var(--clay); }
-.diagram-node .node-title { fill: var(--ink); font-family: var(--sans); font-size: 17px; font-weight: 500; }
-.diagram-node .node-sub { fill: var(--stone); font-family: var(--mono); font-size: 11px; }
-.diagram-edge { fill: none; stroke: rgba(20,20,19,.32); stroke-width: 1.4; }
-.diagram-pulse { fill: var(--clay); }
-.diagram-caption {
-  fill: var(--stone); font-family: var(--mono); font-size: 10px;
-  letter-spacing: .12em; text-transform: uppercase;
-}
-
 /* ── Education ──────────────────────────────────────────────── */
 .edu-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0; border-top: 1px solid var(--rule); }
 .edu-card {

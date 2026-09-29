@@ -78,7 +78,6 @@
       <a href="#about">About</a>
       <a href="#experience">Experience</a>
       <a href="#capabilities">Capabilities</a>
-      <a href="#architecture">Architecture</a>
       <a href="#contact">Contact</a>
     </div>
     <button type="button" class="nav-cmd" id="paletteOpen">
@@ -213,91 +212,6 @@
         </div>
         <p class="sr-only" id="filterStatus" role="status" aria-live="polite"></p>
         <div class="cap-grid" id="capGrid"></div>
-      </div>
-    </section>
-
-    <!-- ── Architecture ──────────────────────────────────────── -->
-    <section class="section" id="architecture">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <span class="eyebrow">Architecture</span>
-          <h2 class="section-title">How the pieces fit together.</h2>
-        </header>
-
-        <div class="diagram-card reveal" data-no-orbit>
-          <div class="diagram-head">
-            <h3 class="diagram-title">Agentic platform, end to end</h3>
-            <span class="diagram-scramble">trace · evaluate · govern</span>
-          </div>
-
-          <svg class="diagram" viewBox="0 0 1000 340" role="img"
-               aria-label="Architecture diagram: an agent orchestrator discovers tools through an MCP tool layer that invokes Grafana, Jira and internal services. The orchestrator calls Amazon Bedrock for inference, emits traces to observability and evaluation tooling, and is served on AWS EKS and RDS.">
-            <defs>
-              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(20,20,19,.42)"/>
-              </marker>
-            </defs>
-            <g class="diagram-edges" fill="none">
-              <path class="diagram-edge" d="M 274 79 C 312 79 337 79 375 79" marker-end="url(#arrow)"/>
-              <path class="diagram-edge" d="M 625 79 C 663 79 688 79 726 79" marker-end="url(#arrow)"/>
-              <path class="diagram-edge" d="M 100 118 L 100 214" marker-end="url(#arrow)"/>
-              <path class="diagram-edge" d="M 198 118 C 198 175 375 165 375 214" marker-end="url(#arrow)"/>
-              <path class="diagram-edge" d="M 625 261 C 663 261 688 261 726 261" marker-end="url(#arrow)"/>
-            </g>
-            <g class="diagram-captions">
-              <text class="diagram-caption" x="324" y="64" text-anchor="middle">discovers</text>
-              <text class="diagram-caption" x="675" y="64" text-anchor="middle">invokes</text>
-              <text class="diagram-caption" x="112" y="172" text-anchor="start">traces</text>
-              <text class="diagram-caption" x="292" y="176" text-anchor="middle">inference</text>
-              <text class="diagram-caption" x="675" y="246" text-anchor="middle">served on</text>
-            </g>
-            <g class="diagram-nodes">
-              <g class="diagram-node" data-tone="accent">
-                <rect x="24" y="40" width="250" height="78" rx="2"/>
-                <circle class="node-dot" cx="52" cy="79" r="4"/>
-                <text class="node-title" x="72" y="74">Agent Orchestrator</text>
-                <text class="node-sub" x="72" y="96">LangGraph · multi-agent</text>
-              </g>
-              <g class="diagram-node" data-tone="data">
-                <rect x="375" y="40" width="250" height="78" rx="2"/>
-                <circle class="node-dot" cx="403" cy="79" r="4"/>
-                <text class="node-title" x="423" y="74">MCP Tool Layer</text>
-                <text class="node-sub" x="423" y="96">dynamic tool discovery</text>
-              </g>
-              <g class="diagram-node" data-tone="data">
-                <rect x="726" y="40" width="250" height="78" rx="2"/>
-                <circle class="node-dot" cx="754" cy="79" r="4"/>
-                <text class="node-title" x="774" y="74">Grafana · Jira · Internal</text>
-                <text class="node-sub" x="774" y="96">downstream services</text>
-              </g>
-              <g class="diagram-node" data-tone="data">
-                <rect x="24" y="222" width="250" height="78" rx="2"/>
-                <circle class="node-dot" cx="52" cy="261" r="4"/>
-                <text class="node-title" x="72" y="256">Observability &amp; Eval</text>
-                <text class="node-sub" x="72" y="278">LangSmith · Grafana</text>
-              </g>
-              <g class="diagram-node" data-tone="accent">
-                <rect x="375" y="222" width="250" height="78" rx="2"/>
-                <circle class="node-dot" cx="403" cy="261" r="4"/>
-                <text class="node-title" x="423" y="256">Amazon Bedrock</text>
-                <text class="node-sub" x="423" y="278">LLM inference</text>
-              </g>
-              <g class="diagram-node" data-tone="data">
-                <rect x="726" y="222" width="250" height="78" rx="2"/>
-                <circle class="node-dot" cx="754" cy="261" r="4"/>
-                <text class="node-title" x="774" y="256">AWS EKS · RDS</text>
-                <text class="node-sub" x="774" y="278">runtime &amp; data layers</text>
-              </g>
-            </g>
-            <g class="diagram-pulses">
-              <circle class="diagram-pulse" cx="0" cy="0" r="3.4"/>
-              <circle class="diagram-pulse" cx="0" cy="0" r="3.4"/>
-              <circle class="diagram-pulse" cx="0" cy="0" r="3.4"/>
-              <circle class="diagram-pulse" cx="0" cy="0" r="3.4"/>
-              <circle class="diagram-pulse" cx="0" cy="0" r="3.4"/>
-            </g>
-          </svg>
-        </div>
       </div>
     </section>
 

@@ -67,9 +67,9 @@
       "name": "anime.js",
       "version": "4.5.0",
       "chunk": "vendor-anime",
-      "role": "The agent-architecture diagram in the light chapter: path drawing, travelling dots, text scramble.",
-      "verdict": "adopted",
-      "why": "Still the shortest path to SVG choreography — DrawSVG and MotionPath equivalents are built in rather than plugins.",
+      "role": "Demonstrated on the lab page; the diagram it drove was removed from the portfolio.",
+      "verdict": "lab-only",
+      "why": "The best tool of the ten for pure SVG choreography — DrawSVG and MotionPath equivalents are built in rather than plugins. It was carrying the agent-architecture diagram, which has been cut from the portfolio, so anime.js is now only demonstrable here.",
       "raw": 40578,
       "gzip": 16402,
       "brotli": 14917
@@ -124,15 +124,15 @@
     }
   ],
   "totals": {
-    "allChunksRaw": 1382181,
-    "allChunksGzip": 402041,
-    "allChunksBrotli": 346297
+    "allChunksRaw": 1379351,
+    "allChunksGzip": 400972,
+    "allChunksBrotli": 345332
   },
   "criticalPath": {
     "index": {
-      "gzip": 65388,
-      "brotli": 58126,
-      "raw": 187026,
+      "gzip": 63903,
+      "brotli": 56847,
+      "raw": 180121,
       "files": [
         "main",
         "main",
@@ -143,9 +143,9 @@
       ]
     },
     "lab": {
-      "gzip": 109844,
-      "brotli": 98666,
-      "raw": 299217,
+      "gzip": 109814,
+      "brotli": 98648,
+      "raw": 299078,
       "files": [
         "lab",
         "lab",

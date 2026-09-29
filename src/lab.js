@@ -576,7 +576,7 @@ function demoAutoAnimate() {
     'hero intro timeline', 'heading reveals', 'scrubbed timeline',
     'stat counters', 'marquee velocity', 'background parallax',
     'nav indicator spring', 'mobile menu', 'cursor spotlight',
-    'card tilt', 'magnetic buttons', 'architecture diagram',
+    'card tilt', 'magnetic buttons', 'camera flight',
     'skills filter reflow', 'contact particles', 'agent-core badge',
   ];
   let seed = 0;
