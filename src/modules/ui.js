@@ -165,14 +165,40 @@ export function initUI({ scene }) {
 
   /* ── Command palette ────────────────────────────────────────── */
 
+  // `keywords` carries the aliases people actually type. Without them the
+  // obvious query "agents" missed the node labelled "Multi-Agent Systems".
   const PALETTE_ITEMS = [
-    ...ROLES.map((role) => ({ kind: 'Experience', label: role.label, hint: role.period, node: role.id })),
-    ...CAPABILITIES.map((cap) => ({ kind: 'Capability', label: cap.label, hint: cap.tags[0], node: cap.id })),
-    ...SECTIONS.map((section) => ({ kind: 'Section', label: section.label, hint: `#${section.id}`, section: section.id })),
-    { kind: 'Link', label: 'Animation lab', hint: '/lab.html', href: '/lab.html' },
-    { kind: 'Link', label: 'Email — zhipengye927@gmail.com', hint: 'mailto', href: 'mailto:zhipengye927@gmail.com' },
-    { kind: 'Link', label: 'LinkedIn', hint: 'external', href: 'https://www.linkedin.com/in/zhipeng-ye' },
+    ...ROLES.map((role) => ({
+      kind: 'Experience',
+      label: role.label,
+      hint: role.period,
+      node: role.id,
+      keywords: `${role.short} ${role.subtitle} ${role.location} ${role.period} ${role.caps.join(' ')}`,
+    })),
+    ...CAPABILITIES.map((cap) => ({
+      kind: 'Capability',
+      label: cap.label,
+      hint: cap.tags[0],
+      node: cap.id,
+      keywords: `${cap.short} ${cap.tags.join(' ')} ${cap.detail}`,
+    })),
+    ...SECTIONS.map((section) => ({
+      kind: 'Section',
+      label: section.label,
+      hint: `#${section.id}`,
+      section: section.id,
+      keywords: `${section.id} jump go`,
+    })),
+    { kind: 'Link', label: 'Animation lab', hint: '/lab.html', href: '/lab.html', keywords: 'demo libraries evaluation' },
+    { kind: 'Link', label: 'Email — zhipengye927@gmail.com', hint: 'mailto', href: 'mailto:zhipengye927@gmail.com', keywords: 'contact hire reach' },
+    { kind: 'Link', label: 'LinkedIn', hint: 'external', href: 'https://www.linkedin.com/in/zhipeng-ye', keywords: 'contact profile social' },
   ];
+
+  /** Every whitespace-separated term must appear somewhere in the item. */
+  function matchesQuery(item, query) {
+    const haystack = `${item.label} ${item.kind} ${item.hint ?? ''} ${item.keywords ?? ''}`.toLowerCase();
+    return query.split(/\s+/).filter(Boolean).every((term) => haystack.includes(term));
+  }
 
   let paletteItems = PALETTE_ITEMS;
   let selectedIndex = 0;
@@ -180,10 +206,7 @@ export function initUI({ scene }) {
 
   function renderPalette(query = '') {
     const q = query.trim().toLowerCase();
-    paletteItems = q
-      ? PALETTE_ITEMS.filter((item) =>
-          `${item.label} ${item.kind} ${item.hint ?? ''}`.toLowerCase().includes(q))
-      : PALETTE_ITEMS;
+    paletteItems = q ? PALETTE_ITEMS.filter((item) => matchesQuery(item, q)) : PALETTE_ITEMS;
 
     selectedIndex = 0;
 
