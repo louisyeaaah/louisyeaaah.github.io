@@ -43,9 +43,9 @@
       "name": "three.js",
       "version": "0.186.1",
       "chunk": "vendor-three",
-      "role": "The dark hero chapter: an agent-graph constellation the camera flies through as you scroll, with boom bloom, film grain and chromatic aberration.",
-      "verdict": "adopted",
-      "why": "The single biggest visual and byte cost, and the reason the page has a hero at all. Costs 138 KB gzip — more than every other library combined — so it is a dynamic import, paused when off-screen or hidden, and degrades to a static frame under reduced motion. Justified only because the hero IS the first impression.",
+      "role": "Demonstrated on the lab page; the main page no longer loads it.",
+      "verdict": "lab-only",
+      "why": "It powered two heroes here — first a shader aurora, then an instanced agent graph with a bloom/DOF/halation chain. Both were replaced by a canvas Context Window, because the brief moved from 'look at this render' to 'read this idea', and text does not need a GPU. At 138.5 KB gzip it was also the single largest thing on the page. Still the best tool in the set for real 3D, and still demonstrated on the lab page.",
       "raw": 536168,
       "gzip": 132467,
       "brotli": 108756
@@ -124,9 +124,9 @@
     }
   ],
   "totals": {
-    "allChunksRaw": 1352001,
-    "allChunksGzip": 394580,
-    "allChunksBrotli": 340748
+    "allChunksRaw": 1352017,
+    "allChunksGzip": 394556,
+    "allChunksBrotli": 340743
   },
   "criticalPath": {
     "index": {
@@ -143,9 +143,9 @@
       ]
     },
     "lab": {
-      "gzip": 109732,
-      "brotli": 98579,
-      "raw": 298892,
+      "gzip": 109708,
+      "brotli": 98578,
+      "raw": 298908,
       "files": [
         "lab",
         "lab",
