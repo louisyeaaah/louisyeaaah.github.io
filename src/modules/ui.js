@@ -149,6 +149,7 @@ export function initUI() {
     { kind: 'Link', label: 'Animation lab', hint: '/lab.html', href: '/lab.html', keywords: 'demo libraries evaluation' },
     { kind: 'Link', label: 'Email — zhipengye927@gmail.com', hint: 'mailto', href: 'mailto:zhipengye927@gmail.com', keywords: 'contact hire reach' },
     { kind: 'Link', label: 'LinkedIn', hint: 'external', href: 'https://www.linkedin.com/in/zhipeng-ye', keywords: 'contact profile social' },
+    { kind: 'Link', label: 'X — @louisyeaah', hint: 'external', href: 'https://x.com/louisyeaah', keywords: 'contact profile social twitter build in public' },
   ];
 
   /** Every whitespace-separated term must appear somewhere in the item. */
